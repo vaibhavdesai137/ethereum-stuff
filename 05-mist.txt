@@ -1,0 +1,39 @@
+
+------------------------------------------------------------------------------------------------------------------------------
+
+Download MIST from https://github.com/ethereum/mist/releases
+
+# Start geth manually because we don't want mist to create a new node
+# Detailed information available in the shell script
+./private-blockchain/startnode.sh 
+
+# If all was good, you should see 3 accounts in mist
+# The 1st account should have a lot of ethers since it is now mining when we started geth
+# At the bootom, you should see that mist connected to "private" blockchain
+# If you don't see private net, then mist couldn't locate your geth.ipc file
+
+# Try creating a new account via mist
+# Verify that our geth console sees the 4th account
+
+> eth.accounts
+["0x4fdf533660f6dc6f99de1d72ac2851a1acf1bf0d", "0x0297074de7fbe97628a12950a273a3808ccaa5e2", "0x4138650371f74c8d4b763dc4410e6e786207b570", "0x88a8daf1c9233539023a10a501bdc36306cb42a0"]
+
+# You can also set names to accounts via mist
+# Its a mist thing because blockchain only works off of addresses
+
+# You can also send ethers via mist
+# Select the from and to address
+# You can choose the confirmation speed, faster the txn, higher the blockchain fess
+# Send 300 ETHERs from main account to 4th account
+# Verify 4th ccount received it
+
+> web3.fromWei(eth.getBalance(eth.accounts[3]), "ether")
+300
+
+# Gotchas:
+# You should always backup your accounts via mist
+# Be careful when sending money and make sure you are on teh right network
+# Sending money to incorrect networks will be gone forever
+
+------------------------------------------------------------------------------------------------------------------------------
+

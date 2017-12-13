@@ -1,0 +1,26 @@
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# Its a chrome extension
+# Get it from https://metamask.io/
+# Does not need local nodes. It can work with nodes running on Metamask's servers
+# So if you ant to work with mainnet, you don't need to set it up on your machine and wait for whole blockchain to be downloaded
+# Can connect to mainnet, any test nets, local nodes, etc.
+# Widely used and major industry adoption
+# Major use is its a DApp compliant platform
+
+# BE VERY CAREFUL SINCE METAMASK CAN CONNECT TO MAINNET
+
+# Since metamask runs in crowser, it does not have access to our privte node's keystore
+# All accounts created via metamask have their data in the extension itself
+# As a result, metamask cannot see the accounts created outside of metamask even though you are connected to local node
+# This is because browser extension does not have access to file system
+# Similarly, accounts created via metamask will not be visible in mist or geth console
+# Reason mist and geth can see each others changes is because both share the same geth.ipc file
+
+# Metamask provides an import account option to see accounts created by mist/geth
+# By default, you will see "Account 1" in metamask which itself created when launching the extension
+# We want metamask to see the 4 accounts we created in our private node
+
+------------------------------------------------------------------------------------------------------------------------------
+

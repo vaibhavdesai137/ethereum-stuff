@@ -16,3 +16,39 @@
 00:21:12.519784 db@open done T·24.771213ms
 01:13:45.887038 db@close closing
 01:13:45.888248 db@close done T·1.203954ms
+=============== Dec 13, 2017 (PST) ===============
+13:18:26.017819 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+13:18:26.019162 version@stat F·[1] S·549B[549B] Sc·[0.25]
+13:18:26.019255 db@open opening
+13:18:26.019357 journal@recovery F·1
+13:18:26.020152 journal@recovery recovering @3
+13:18:26.092753 memdb@flush created L0@5 N·27102 S·1MiB "\x00F\xcd..\xf1X\",v25846":"\xff\xfba..\x94\xec\xb0,v23602"
+13:18:26.093817 version@stat F·[2] S·1MiB[1MiB] Sc·[0.50]
+13:18:26.095409 db@janitor F·4 G·0
+13:18:26.095432 db@open done T·76.162943ms
+13:19:02.245075 table@compaction L0·2 -> L1·0 S·1MiB Q·27331
+13:19:02.519869 table@build created L1@8 N·17392 S·1020KiB "\x00F\xcd..\xf1X\",v25846":"\xff\xfba..\x94\xec\xb0,v23602"
+13:19:02.520646 version@stat F·[0 1] S·1020KiB[0B 1020KiB] Sc·[0.00 0.01]
+13:19:02.521285 table@compaction committed F-1 S-316KiB Ke·0 D·9719 T·235.548745ms
+13:19:02.521578 table@remove removed @5
+13:19:02.521761 table@remove removed @2
+14:26:21.995733 db@close closing
+14:26:21.996151 db@close done T·416.162µs
+=============== Dec 13, 2017 (PST) ===============
+14:26:59.627463 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+14:26:59.627932 version@stat F·[0 1] S·1020KiB[0B 1020KiB] Sc·[0.00 0.01]
+14:26:59.627959 db@open opening
+14:26:59.628017 journal@recovery F·1
+14:26:59.628654 journal@recovery recovering @6
+14:26:59.680483 memdb@flush created L0@9 N·22133 S·1MiB "\x00[\xb3..\xb2\xa1\xed,v48016":"\xff\xe5\xe1..\xbe\xc9\xc5,v40205"
+14:26:59.681614 version@stat F·[1 1] S·2MiB[1MiB 1020KiB] Sc·[0.25 0.01]
+14:26:59.683548 db@janitor F·4 G·0
+14:26:59.683572 db@open done T·55.604683ms
+14:28:32.169064 table@compaction L0·1 -> L1·1 S·2MiB Q·49585
+14:28:32.276207 table@build created L1@12 N·32147 S·1MiB "\x00F\xcd..\xf1X\",v25846":"\xff\xfba..\x94\xec\xb0,v23602"
+14:28:32.276285 version@stat F·[0 1] S·1MiB[0B 1MiB] Sc·[0.00 0.02]
+14:28:32.278067 table@compaction committed F-1 S-231KiB Ke·0 D·7378 T·108.931117ms
+14:28:32.278391 table@remove removed @9
+14:28:32.278667 table@remove removed @8
+14:38:03.897846 db@close closing
+14:38:03.898617 db@close done T·762.768µs

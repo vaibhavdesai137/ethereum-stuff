@@ -2,7 +2,7 @@
 ------------------------------------------------------------------------------------------------------------------------------
 
 # Initialize a private chain
-geth --datadir ./private-blockchain init ./genesis.json
+geth --datadir ./private-blockchain init ./private-blockchain/genesis.json
 tree .
 
 ├── genesis.json

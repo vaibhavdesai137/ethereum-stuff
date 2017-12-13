@@ -1,0 +1,73 @@
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# Start geth
+# Detailed information available in the shell script
+./private-blockchain/startnode.sh 
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# Attach to geth in a separate terminal
+# We can also do "geth --datadir=./chaindata console" to get the console while running geth in the same window
+# But its too confuisng since eth logs keep getting printed there.
+# Make sure the datadir matches where you blockchain data is stored (you may be running multiple nodes)
+# 
+geth attach ~/Library/Ethereum/geth.ipc 
+
+Welcome to the Geth JavaScript console!
+
+instance: Geth/v1.7.3-stable/darwin-amd64/go1.9.2
+coinbase: 0x4fdf533660f6dc6f99de1d72ac2851a1acf1bf0d
+at block: 467 (Wed, 13 Dec 2017 00:29:52 PST)
+ datadir: /Users/vaidesai/Development/git/vaibhavdesai137/ethereum-stuff/private-blockchain
+ modules: admin:1.0 debug:1.0 eth:1.0 miner:1.0 net:1.0 personal:1.0 rpc:1.0 txpool:1.0 web3:1.0
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# Lets play around with some geth commands
+
+# Check accounts
+# This should match the 3 accounts we created earlier
+> eth.accounts
+[
+	"0x4fdf533660f6dc6f99de1d72ac2851a1acf1bf0d", 
+	"0x0297074de7fbe97628a12950a273a3808ccaa5e2", 
+	"0x4138650371f74c8d4b763dc4410e6e786207b570"
+]
+
+# Check if our mining rewards are going to 1st account as expected
+> eth.coinbase
+"0x4fdf533660f6dc6f99de1d72ac2851a1acf1bf0d"
+
+# See if we are getting any rewards for mining
+# 5 ethers for mining each block
+# balance is denoted in WEI
+# 1 ETHER = 10^18 WEI
+eth.getBalance(eth.coinbase)
+3.63e+21
+
+# See the balance in ethers
+> web3.fromWei(eth.getBalance(eth.coinbase), "ether")
+4400
+
+# Stop mining, verify in the other terminal that mining has stopped
+> miner.stop()
+
+# Start mining, verify in the other terminal that mining has stopped
+# You can also control how many threads to use for mining
+> miner.start()
+> miner.start(3) <--- 3 parallel threads
+
+# Get network identifier
+> net.version
+"4224"
+
+# Lock/Unlock account from terminal
+> personal.unlockAccount(eth.accounts[1], "test123", 300);
+true
+> personal.unlockAccount(eth.accounts[2]);
+Unlock account 0x4138650371f74c8d4b763dc4410e6e786207b570
+Passphrase: 
+true
+
+------------------------------------------------------------------------------------------------------------------------------

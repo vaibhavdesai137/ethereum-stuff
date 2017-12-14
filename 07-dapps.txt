@@ -1,0 +1,10 @@
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# Piece of code that runs on EVM
+# Functions in smart contract get executed by every single node on the network
+# Has a unique address that it gets deployed to
+# 
+
+------------------------------------------------------------------------------------------------------------------------------
+

@@ -1,0 +1,209 @@
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# Run "npm init", call the project as "greetings" and accept all defaults
+# Install our dependencies
+#	- npm install web3@0.20.0
+#	- npm install solc
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# Once smart contract code is ready, start testpc to deploy
+# testrpc has no states. So the contract has to be deployed every time we start/stop testrpc
+# Run "testrpc" command
+# By default we get 10 accounts
+
+$ testrpc
+EthereumJS TestRPC v6.0.3 (ganache-core: 2.0.2)
+
+Available Accounts
+==================
+(0) 0x41b6026ff0f7adf22799cdb76a5ee5dea580d4d7
+(1) 0x24f55f8aebb4f9408d5fdcf61b5c700185dc706f
+(2) 0x3ffcef2329a2073b655d9d543f6682c8d135808a
+(3) 0x883a9be95e8288a07cdb154ced4d76c66d5b371f
+(4) 0x480659f3e86931a110c33899329ea2a2234d1b41
+(5) 0xd9cd74dcc5b3153f026b2a3b8d0c91038fd99128
+(6) 0x33856aa1096512a56f078dad33574f86bedf6754
+(7) 0x237747612237cf5d8f18c8837af73a3611e693ac
+(8) 0x6e28254116bbaae0856e9f7b7e9b877978cb7e7c
+(9) 0x30c1dd4d950765218bd38f76a21554a684b91e52
+
+Private Keys
+==================
+(0) 74ea284a089ce95eab074d8bc5d406b06f149cc29cdddb628598ef368b6dc6de
+(1) e0869af9a0138807970af2ccbd64f5d5a5c0c6a0652c36b7834a267534b3a120
+(2) 857675941fcd92d8586d160cdf680e9a926205733554e2d8e252e2cb0f98fe67
+(3) 68c6d24f127097353f552dc2dd0b69a719d29ebbdab05afcbd01c08e29148280
+(4) e541f74856db910b56ae6b9f1529992d54015c1cb6d7d40dacd1b9e37b1ce7f7
+(5) 91390dea87f367d917f592ba4bbe95eccdf64af044c74461c1822205ce53295e
+(6) bfad5081290d3647077052cf28b089ae1ddf76a10ed4bba4b71f7e7dfdbee9a1
+(7) ab36c006219484fcdabf25e4bb945e657ad8421320d7d81a49d60f791d833824
+(8) 4b3a93fbb587b152bcc250efc095b547582c5bd223f37d268e410f785a777df2
+(9) 00e419bb8af773a9c8a879037270d36900703b18b61e6a24315b8b8caa50d624
+
+HD Wallet
+==================
+Mnemonic:      melt youth net sight share business spot laundry hole frame blur hire
+Base HD Path:  m/44'/60'/0'/0/{account_index}
+
+Listening on localhost:8545
+eth_getBlockByNumber
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# Lets interact with our contract via node console.
+> Web3 = require('web3');
+{ [Function: Web3]
+  providers: 
+   { HttpProvider: [Function],
+     IpcProvider: [Function] } }
+
+> web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+{ _requestManager: 
+   { provider: 
+      { host: 'http://localhost:8545',
+        timeout: 0,
+        user: undefined,
+        password: undefined 
+      },
+	}
+	.....
+	.....
+	.....
+}        
+
+# Verify our connection to testrpc blockchain was good web3
+# We should see the same 10 accounts created by testrpc
+> web3.eth.accounts
+[ '0x41b6026ff0f7adf22799cdb76a5ee5dea580d4d7',
+  '0x24f55f8aebb4f9408d5fdcf61b5c700185dc706f',
+  '0x3ffcef2329a2073b655d9d543f6682c8d135808a',
+  '0x883a9be95e8288a07cdb154ced4d76c66d5b371f',
+  '0x480659f3e86931a110c33899329ea2a2234d1b41',
+  '0xd9cd74dcc5b3153f026b2a3b8d0c91038fd99128',
+  '0x33856aa1096512a56f078dad33574f86bedf6754',
+  '0x237747612237cf5d8f18c8837af73a3611e693ac',
+  '0x6e28254116bbaae0856e9f7b7e9b877978cb7e7c',
+  '0x30c1dd4d950765218bd38f76a21554a684b91e52' ]
+
+ ------------------------------------------------------------------------------------------------------------------------------
+
+# Import solc compiler
+> solc = require('solc');
+{ 
+	version: [Function],
+	...
+	...
+}
+
+# Read & compile our smart contract code
+> sourceCode = fs.readFileSync("Greetings.sol").toString();
+> compiledCode = solc.compile(sourceCode);
+{ 
+	contracts: { ':Greetings': 
+      { 
+      	assembly: [Object],
+      }
+   }
+}
+
+# Get the contract ABI from the compiledCode object
+# We can compile all contracts at once, here we only compile the ":Greetings" contract
+> contractABI = JSON.parse(compiledCode.contracts[":Greetings"].interface);
+[ { constant: false,
+    inputs: [ [Object] ],
+    name: 'setGreetings',
+    outputs: [],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'function' },
+  { constant: true,
+    inputs: [],
+    name: 'getGreetings',
+    outputs: [ [Object] ],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function' },
+  { inputs: [],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'constructor' } ]
+
+# Need bytecode to deploy the contract
+> byteCode = compiledCode.contracts[":Greetings"].bytecode;
+'60606040523....0029'
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# Ready for deploying
+> greetingsContract = web3.eth.contract(contractABI);
+{...}
+
+# Deploy
+# data ---> bytecode of our contract
+# from ---> the account that is publishing the contract
+# gas ---> max gas the account is willing to pay
+# greetingsDeployed = greetingsContract.new({data: byteCode, from: web3.eth.accounts[0], gas: -1});
+# Error: Error: Exceeds block gas limit
+> greetingsDeployed = greetingsContract.new({data: byteCode, from: web3.eth.accounts[0], gas: 4700000});
+{...}
+
+# Deploying the contract created a new txn on blockchain (the output of above command has it)
+# The data field is the data passed on with the txn
+# The constructor of the smart contract got invoked
+# You can verify the txn in testrpc console
+# It would be something like below:
+
+# Transaction: 0x86a6aa95fb5092cbe2690818ce3f5f77bf737a9dc0fd0b81ff8d93bf7953c090
+# Contract created: 0x616125f5544c23c135aa019c74c3fa24587f95f3
+# Gas usage: 373550
+# Block Number: 1
+# Block Time: Thu Dec 14 2017 13:48:14 GMT-0800 (PST)
+
+# We got a contract address that people can now use to interact with
+> greetingsInstance = greetingsContract.at(greetingsDeployed.address);
+{...}
+
+> greetingsAddress = greetingsInstance.address;
+'0x616125f5544c23c135aa019c74c3fa24587f95f3'
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# Ready to execute functions on smart contract
+
+# You will notice no txn was created on blockchain when calling getGreetings()
+# This is because it was marked as "constant"
+# "const" should be used for all getters and have NO GAS cost since it is simply returning the value
+> greetingsInstance.getGreetings();
+'My value was set when smart contract was deployed on block chain. I am now ready to execute functions of my contract which you are doing right now'
+
+# Now using a setter will incur some gas because this method is not a "const"
+# You get the txn id back and you can verify testrpc logs to check for gas used
+# The "from" tells the blockchain who will be charged for gas
+# Without "from", blockchain won't accept the txn since someone needs to pay for gas
+
+# > greetingsInstance.setGreetings("Hello there!!!");
+# Error: invalid address
+
+# > greetingsInstance.setGreetings("Hello there!!!", {from: 'foo', gas: 10});
+# Error: invalid address
+
+# > greetingsInstance.setGreetings("Hello there!!!", {from: web3.eth.accounts[0], gas: 10});
+# Error: Error: base fee exceeds gas limit
+
+> greetingsInstance.setGreetings("Hello there!!!", {from: web3.eth.accounts[0]});
+'0xba5fcf6baa9b52428b9450770f7642116fd1f9b390646731cadd6c053e88014f'
+
+# Transaction: 0xba5fcf6baa9b52428b9450770f7642116fd1f9b390646731cadd6c053e88014f
+# Gas usage: 24390
+# Block Number: 2
+# Block Time: Thu Dec 14 2017 14:02:19 GMT-0800 (PST)
+
+# Verify the state has changed
+> greetingsInstance.getGreetings();
+'Hello there!!!'
+
+------------------------------------------------------------------------------------------------------------------------------
+
+

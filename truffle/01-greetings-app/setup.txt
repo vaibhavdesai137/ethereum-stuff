@@ -1,0 +1,215 @@
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# Install our dependencies
+> npm install web3@0.20.0
+> npm install solc
+> npm install -g truffle@3.4.11 
+
+> nvm use 6.11.3
+# Now using node v6.11.3 (npm v3.10.10)
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# Instead of doing "npm init", we'll use truffle utilities
+> truffle init
+# Downloading project...
+# Project initialized.
+# Documentation: http://truffleframework.com/docs
+# Commands:
+# Compile: truffle compile
+# Migrate: truffle migrate
+# Test:    truffle test
+
+# Check the dir structure created by truffle
+> tree .
+
+├── contracts
+│   ├── ConvertLib.sol
+│   ├── MetaCoin.sol
+│   └── Migrations.sol
+├── migrations
+│   ├── 1_initial_migration.js
+│   └── 2_deploy_contracts.js
+├── setup.txt
+├── test
+│   ├── TestMetacoin.sol
+│   └── metacoin.js
+└── truffle.js
+
+# contracts/Migrations.sol used by truffle to keep track of our contract versioning
+# contracts/ConvertLib.sol <--- sample contract
+# contracts/MetaCoin.sol <--- sample contract
+
+# migrations/1_initial_migration.js used by truffle to keep track of our contract deployments
+# migrations/2_deploy_contracts.js is used to initialize our custom contracts here that truffle will deploy
+# truffle will execute the .js files here based on numbers
+
+# test/* is used for testing our smart contracts before dpeloyments
+
+# truffle.js is used to set the env
+
+# DO NOT DELETE contracts/Migrations.sol
+# DO NOT DELETE contracts/1_initial_migration.js
+# DO NOT DELETE contracts/2_deploy_contracts.js
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# testrpc has no states. So the contract has to be deployed every time we start/stop testrpc
+# Run "testrpc" command
+# By default we get 10 accounts
+
+$ testrpc
+EthereumJS TestRPC v6.0.3 (ganache-core: 2.0.2)
+
+Available Accounts
+==================
+(0) 0x41b6026ff0f7adf22799cdb76a5ee5dea580d4d7
+(1) 0x24f55f8aebb4f9408d5fdcf61b5c700185dc706f
+(2) 0x3ffcef2329a2073b655d9d543f6682c8d135808a
+(3) 0x883a9be95e8288a07cdb154ced4d76c66d5b371f
+(4) 0x480659f3e86931a110c33899329ea2a2234d1b41
+(5) 0xd9cd74dcc5b3153f026b2a3b8d0c91038fd99128
+(6) 0x33856aa1096512a56f078dad33574f86bedf6754
+(7) 0x237747612237cf5d8f18c8837af73a3611e693ac
+(8) 0x6e28254116bbaae0856e9f7b7e9b877978cb7e7c
+(9) 0x30c1dd4d950765218bd38f76a21554a684b91e52
+
+Private Keys
+==================
+(0) 74ea284a089ce95eab074d8bc5d406b06f149cc29cdddb628598ef368b6dc6de
+(1) e0869af9a0138807970af2ccbd64f5d5a5c0c6a0652c36b7834a267534b3a120
+(2) 857675941fcd92d8586d160cdf680e9a926205733554e2d8e252e2cb0f98fe67
+(3) 68c6d24f127097353f552dc2dd0b69a719d29ebbdab05afcbd01c08e29148280
+(4) e541f74856db910b56ae6b9f1529992d54015c1cb6d7d40dacd1b9e37b1ce7f7
+(5) 91390dea87f367d917f592ba4bbe95eccdf64af044c74461c1822205ce53295e
+(6) bfad5081290d3647077052cf28b089ae1ddf76a10ed4bba4b71f7e7dfdbee9a1
+(7) ab36c006219484fcdabf25e4bb945e657ad8421320d7d81a49d60f791d833824
+(8) 4b3a93fbb587b152bcc250efc095b547582c5bd223f37d268e410f785a777df2
+(9) 00e419bb8af773a9c8a879037270d36900703b18b61e6a24315b8b8caa50d624
+
+HD Wallet
+==================
+Mnemonic:      melt youth net sight share business spot laundry hole frame blur hire
+Base HD Path:  m/44'/60'/0'/0/{account_index}
+
+Listening on localhost:8545
+eth_getBlockByNumber
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# Create contracts/Greetings.sol
+# Update migrations/2_deploy_contracts to add Greetings to deployment
+
+# Lets do some truffle work now
+> truffle migrate
+# Compiling ./contracts/Greetings.sol...
+# Compiling ./contracts/Migrations.sol...
+# Writing artifacts to ./build/contracts
+# Running migration: 1_initial_migration.js
+#   Deploying Migrations...
+#   Migrations: 0x61a19291b319618362cd1219f1830a41493eb66a
+# Saving successful migration to network...
+# Saving artifacts...
+# Running migration: 2_deploy_contracts.js
+#   Deploying Greetings...
+#   Greetings: 0x448e81e0aeefbc9304893662899d3dbe45758504
+# Saving successful migration to network...
+
+# "migrate" compiles smart contracts
+# "migrate" creates artifacts for deployment
+# "migrate" runs the migration .js files
+# "migrate" deploys the contract on blockchain ()
+# Both "Greetings" and "Migrations" were deployed on blockchain
+# Verify that txns were created in testrpc
+# You should see 4 txns
+# All 4 txns incur gas
+# Txn 1 and 3 mention "Contract created..." with their respective address
+# Txn 2 and 4 are run because of code in Migrations.sol
+# It calls the setCompleted(...) to update last_completed_migration to keep a track of deployed contracts
+
+# truffle checks for that state of last_completed_migration to see if the contract needs a new deployment or not
+# So running "truffle migrate" is an idempotent operation if there were no changes
+# Makes sense because why would we deploy the same contract again and incur gas
+
+# From testrpc logs:
+
+# eth_sendTransaction
+#   Transaction: 0x590f53432d2b10e73510142623df6bf61f51678786afd818108311e6eb27f5b4
+#   Contract created: 0x61a19291b319618362cd1219f1830a41493eb66a
+# eth_sendTransaction
+#   Transaction: 0x2a638f065151d2049c6eb8b88c2b05f7d7a297e28691d2815cfe0bb536d8a8a0
+#   Gas usage: 42028
+# eth_sendTransaction
+#   Transaction: 0x1d2dd066fb64acf6b2335e2f582fd0db10eea5c3a3f7efafd02354262e04820f
+#   Contract created: 0x448e81e0aeefbc9304893662899d3dbe45758504
+# eth_sendTransaction
+#   Transaction: 0x3ca138ba9486332b25514de5fe44ea7085a4ac5ad226042356cecb2b8d9fb107
+#   Gas usage: 27028
+
+# Txn 1 <--- Deployed Migrations.sol
+# Txn 2 <--- State updated for Migrations.sol
+# Txn 3 <--- Deployed Greetings.sol
+# Txn 4 <--- State updated for Migrations.sol
+
+# Since no contract changes were made, running "truffle migrate" does nothing on blockchain
+> truffle migrate
+# Using network 'development'.
+# Network up to date.
+
+# Running "migrate" with "reset" forces a redeployment
+# This will result in another 4 txns on the blockchain
+> truffle migrate --reset
+
+# eth_sendTransaction
+#   Transaction: 0x42da772639de0a62db3b66a6b964acc80eb894b7f80a9d53e0ed3a164b333b76
+#   Contract created: 0x079663d5f9a6592bcacb39af00a6c4ef6ff6b7f6
+# eth_sendTransaction
+#   Transaction: 0xf3ba059d798f458bbef2dc42ad2d59cd70471b27745951fedcb2c6dcf13ea0ef
+# eth_sendTransaction
+#   Transaction: 0xd89942200d6aec650880d85cace849de50d0abc16899a07ff2c74be9e06be17b
+#   Contract created: 0xd0c19121165c9c2ab651901a194d2bd635c5ad26
+# eth_sendTransaction
+#   Transaction: 0xdffb028f8ed9e314a884a411f21fa6694690085423816b84c5849cb9bab5c3c1
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# Lets interact using truffle console
+> truffle console
+
+# Can directly run all web3 functions without doing the BS require(..) and all that we did with node console
+> truffle(development)> web3.eth.accounts[0]
+# '0x8b727902d52eca75bbb0f202cb1f95cfc9534fed'
+
+# And interact with our contract without doing what we did with node console
+# So easy
+# Should match the address of txn 3 above
+> truffle(development)> Greetings.address
+# '0xd0c19121165c9c2ab651901a194d2bd635c5ad26'
+
+# Store our contract in the var "app" if it is successfully deployed
+> truffle(development)> Greetings.deployed().then(function(instance) {app = instance;})
+undefined
+> truffle(development)> app
+{...}
+
+# Truffle executes functions (non-txns) as asycn calls using promises
+> truffle(development)> app.getGreetings.call()
+# 'My value was set when smart contract was deployed on block chain. I am now ready to execute functions of my contract which you are doing right now'
+
+> truffle(development)> app.setGreetings("Hello", {from: web3.eth.accounts[0]});
+# { tx: '0x6aa8b58fc4ce6737bec1f2280771741f3a534f484d943d802a88d8aeeccf132c',
+#   receipt: 
+#    { transactionHash: '0x6aa8b58fc4ce6737bec1f2280771741f3a534f484d943d802a88d8aeeccf132c',
+#      gasUsed: 26622,
+#      cumulativeGasUsed: 26622,
+#      contractAddress: null,
+#      logs: [],
+#      status: 1 },
+#   logs: [] }
+
+# Verify state successfully updated
+> truffle(development)> app.getGreetings.call();
+# 'Hello'
+
+------------------------------------------------------------------------------------------------------------------------------

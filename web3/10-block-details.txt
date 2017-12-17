@@ -1,0 +1,101 @@
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# Continuing from the previous text file...
+
+# Txn inspection
+# Check the txn details via geth console
+> eth.getTransaction('0x82b1c77980d9c226627b1b91f8d62ae7ca43c5ea77a38262ea2d67074a5c38f1');
+{
+  blockHash: "0xad81538ba76b5ae529ff45b6c2c019fbad7541d14d62b9f1d5ec29409cd208ae",
+  ...
+  ...
+}
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# Block inspection
+> eth.getBlock('0xad81538ba76b5ae529ff45b6c2c019fbad7541d14d62b9f1d5ec29409cd208ae');
+{
+  difficulty: 0,
+  extraData: "0x0",
+  gasLimit: 6721975,
+  gasUsed: 378262,
+  hash: "0xad81538ba76b5ae529ff45b6c2c019fbad7541d14d62b9f1d5ec29409cd208ae",
+  logsBloom: "0x00...",
+  miner: "0x0000000000000000000000000000000000000000",
+  nonce: "0x0",
+  number: 3,
+  parentHash: "0x21c067aaefd7aff34e16aff5bb65ebbffcb2de13189df1421932edddac7f8d28",
+  receiptsRoot: "0x56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421",
+  transactionsRoot: "0x56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421",
+  stateRoot: "0xdff0b5de97f2f6a59ca8ef2c0297f188ad939cb22cd36842d151e2cd2d470bb9",
+  sha3Uncles: "0x1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347",
+  size: 1000,
+  timestamp: 1513461472,
+  totalDifficulty: 0,
+  transactions: ["0x82b1c77980d9c226627b1b91f8d62ae7ca43c5ea77a38262ea2d67074a5c38f1"],
+  uncles: []
+}
+
+# difficulty
+#   - current network difficulty block
+#   - for testrpc its always 0
+#   - difficulty keeps going up as the overall network hash rate increases
+#   - for bitcoin, its every 14 days
+# extraData
+#   - any additional info attached for this block
+#   - no data in our case
+# gasLimit
+#   - max gas allowed when processing the block
+#   - default in our case
+#   - more on this later
+# gasUsed
+#   - actual gas used to mine the block
+#   - can be higher than gas offered by sender but cannot exceed gasLimit
+#   - if txn not verified after reaching gasLimit, txn is cancelled but the miner still keeps the gas
+# hash
+#   - hash of the block
+# logsBloom
+#   - all events are stored here
+#   - events can be created from smart contracts
+#   - no events created in our case
+#   - look up solidity on how to create events
+# miner
+#   - address of the miner who mined this block successfully
+#   - this miner will receive the mining reward (5 ETH today)
+#   - and will also receive the gas fees for using computation power
+#   - since testrpc is in-mem blockchain, no one gets the rewards and hence 0x0
+# nonce
+#   - nonce of the block used for mining algo
+#   - this value of nonce is what makes the block verified
+# number
+#   - block number in the blockchain
+# parentHash
+#   - hash of the prev block in the blockchain
+# receiptsRoot
+#   - root hash of the receipts tree
+#   - read up on eth merkel trees to understand more
+# stateRoot
+#   - root hash of the state tree
+#   - read up on eth merkel trees to understand more
+# transactionsRoot
+#   - root hash of the txns tree
+#   - read up on eth merkel trees to understand more
+# sha3Uncles
+#   - read up on eth merke trees to understand more
+# size
+#   - size of the block (includes all txns, events, etc.)
+#   - size is in bytes
+# timestamp
+#   - timestamp when the block was built
+# totalDifficulty
+#   - total difficulty of the network up until this block
+#   - sum of difficulties of all blocks so far
+#   - 0 for us on test rpc
+# transactions
+#   - list of all txns hashes that are now verified in this block
+# uncles
+#   - later
+
+------------------------------------------------------------------------------------------------------------------------------

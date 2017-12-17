@@ -1,0 +1,115 @@
+
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# You pay transactions fees when:
+# 	- when you send ether to some address
+# 	- when you deploy smart contract
+# 	- when you call a smart contract function
+
+# These fees are paid in GAS
+# Gas is just a unit of complexity used to set price of code execution on EVM
+# Value of gas does not depend on the current value of ether
+# This is because the computation power needed to execute has nothing to do with value of ether
+# Gas is paid by the account initiating the txn
+# This means the account needs to have enough ether in balance for the txn to be initiated
+# For smart contracts, more complicated the code, higher the gas
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# Start testrpc
+testrpc
+EthereumJS TestRPC v6.0.3 (ganache-core: 2.0.2)
+...
+...
+Listening on localhost:8545
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# Attach geth in a new terminal
+geth attach http://localhost:8545
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# Check balance of our 1st account
+
+> eth.accounts
+["0x965f4ad70a090e72f4097a2f79c6a6b26e07d8d7", "...", ... ]
+
+# By default, the 1st account is the mining account
+> eth.coinbase
+"0x965f4ad70a090e72f4097a2f79c6a6b26e07d8d7"
+
+> web3.fromWei(eth.getBalance('0x965f4ad70a090e72f4097a2f79c6a6b26e07d8d7'), "ether");
+100
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# Deploy Greetings contract via truffle in a new terminal
+truffle migrate
+# Running migration: 1_initial_migration.js
+...
+...
+...
+# Saving artifacts...
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# Check the testrpc console to look at 4 txns that were created
+# Txn 1: Deploy Migrations contract (used by truffle)
+# Txn 2: Update state of Migrations contract (used by truffle)
+# Txn 3: Deploy Greetings contract
+# Txn 4: Update state of Greetings contract (used by truffle)
+
+# From testrpc console:
+# eth_sendTransaction
+# 	- Transaction: 0xe1584a109bc67f20f627af62d9a4e984fdc1f51a001b66e174b0aa56dcab49a2
+#  	- Gas usage: 186938
+# eth_sendTransaction
+# 	- Transaction: 0xbc36d19baf26a36639a1fd92a0ff57b4451224f9ab25f672ab0f2dac0d7b32ae
+# 	- Gas usage: 42028
+# eth_sendTransaction
+# 	- Transaction: 0x82b1c77980d9c226627b1b91f8d62ae7ca43c5ea77a38262ea2d67074a5c38f1
+# 	- Gas usage: 378262
+# eth_sendTransaction
+# 	- Transaction: 0x49d73eba876d65abdf9247421798c8fd61669416f2ae89720e14d5cfe4107594
+# 	- Gas usage: 27028
+
+# Each txn had a gas associated with it
+# Total gas = 186938 + 42028 + 378262 + 27028
+# Total gas = 634256
+# This gas will be deducted from the account that did all these txns
+# In our case, its the 1st account
+# 1st account had 100 ETH, lets see how many are left now
+
+> web3.fromWei(eth.getBalance('0x965f4ad70a090e72f4097a2f79c6a6b26e07d8d7'), "ether");
+99.9365744
+
+# 634256 GAS = 0.0634256 ETH
+# How did this happen? How come there was an exact conversion of (1 GAS = 0.01 ETHER) ?
+# For this, we now need to see what was gas price in our blocks
+
+# Take any of those 4 txns to inspect the gas price
+> eth.getTransaction('0xe1584a109bc67f20f627af62d9a4e984fdc1f51a001b66e174b0aa56dcab49a2');
+{
+  ...
+  gasPrice: 100000000000
+  ...
+}
+
+# gasPrice is what we are willing to pay for each unit of gas we are offering
+# this is expressed in WEI
+# 100000000000 WEI = 0.0000001 ETH
+# 634256 * 100000000000 WEI =  634256 * 0.0000001 ETH
+# 634256E16 = 0.0634256 ETH
+
+# So basically, TOTAL TXN FEES = GAS USAGE * GAS PRICE
+# Gas price is different on different networks usually
+# Also, miners usually pick the txns offering highest gas
+# Higher the gas, faster it gets verified
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# More on gas offered vs gas used vs gas limit in the next text file
+
+------------------------------------------------------------------------------------------------------------------------------

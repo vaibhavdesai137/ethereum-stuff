@@ -1,0 +1,142 @@
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# Run "testrpc" command
+$ testrpc
+EthereumJS TestRPC v6.0.3 (ganache-core: 2.0.2)
+....
+....
+....
+Listening on localhost:8545
+eth_getBlockByNumber
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# A transaction can be one of the three:
+#	- transfer of ether
+#	- code of smart contract
+#	- smart contract function call (that changes state)
+
+# Each txn has the the following 4 fields at least:
+#	- from: address paying for the txn fees (gas) + initiating ether transfer
+#	- to: address receiving the ether
+#   - value: amount of ethers being transferred
+#   - data/input: any additional info
+#				: in case of smart contract deployment, this is the bytecode of the contract
+#				: in case of smart contract function call, this can have the function args
+
+# from/to addresses can either be external accounts or smart contracts itself
+# So you can send ethers to smart contract
+# Or recevie ethers from smart contract
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# Start testrpc
+testrpc
+EthereumJS TestRPC v6.0.3 (ganache-core: 2.0.2)
+...
+...
+Listening on localhost:8545
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# Attach geth in a new terminal
+geth attach http://localhost:8545
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# Deploy Greetings contract via truffle in a new terminal
+truffle migrate
+
+# Running migration: 1_initial_migration.js
+#   Deploying Migrations...
+#   Migrations: 0x33bada3548ac785bb80ef4bc845911ceb971d63b
+# Saving successful migration to network...
+# Saving artifacts...
+# Running migration: 2_deploy_contracts.js
+#   Deploying Greetings...
+#   Greetings: 0xe8203020717396e8eaf647627e3350e1c97d95bf
+# Saving successful migration to network...
+# Saving artifacts...
+
+# Check the testrpc console to look at 4 txns that were created
+# The 4rd txn is the Greetings contract getting deployed
+
+# eth_sendTransaction
+#   Transaction: 0x82b1c77980d9c226627b1b91f8d62ae7ca43c5ea77a38262ea2d67074a5c38f1
+#   Contract created: 0xe8203020717396e8eaf647627e3350e1c97d95bf
+#   Gas usage: 378262
+#   Block Number: 3
+#   Block Time: Sat Dec 16 2017 13:57:52 GMT-0800 (PST)
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# Txn inspection
+# Check the txn details via geth console
+> eth.getTransaction('0x82b1c77980d9c226627b1b91f8d62ae7ca43c5ea77a38262ea2d67074a5c38f1');
+{
+  blockHash: "0xad81538ba76b5ae529ff45b6c2c019fbad7541d14d62b9f1d5ec29409cd208ae",
+  blockNumber: 3,
+  from: "0x7f81e92ec256f9081b97a46dcaa835fffd0e3e56",
+  gas: 4712388,
+  gasPrice: 100000000000,
+  hash: "0x82b1c77980d9c226627b1b91f8d62ae7ca43c5ea77a38262ea2d67074a5c38f1",
+  input: "0x6060604...",
+  nonce: 2,
+  to: "0x0",
+  transactionIndex: 0,
+  value: 0
+}
+
+# blockHash
+#	- the hash of the block this txn resides in
+#	- this is the verified hash
+#	- block is already appended to blockchain at this point
+# blockNumber
+#	- block number in the block chain
+#	- since we used testrpc, only 4 txns were create by truffle
+#	- the 3rd txn was the smart getting getting deployed and hence block number is 3
+#	- this is because testrpc only uses one txn in each block
+#	- in mainnet, it is very much possible all txns will be on the same block
+# from
+#	- address (sender) who initiated the txn
+#	- in our case, this was the 1st test account testrpc created
+# gas
+#	- sender can decide on gas value
+#	- higher the gas, higher the chances of txn getting picked up by miners
+#	- in our case, truffle passed the default value
+# gasPrice
+#	- sender can decide on gas price
+#	- again, higher the gas price, higher the chances of txn getting picked up by miners
+#	- expressed in WEI
+# hash
+#	- hash of the txn itself
+#	- remember, txns get added to block and hashes are created (merkle tress)
+#	- all txn hashes will then be used to compute block hash
+#	- this is done so that miners don't have to wait for all txns to be available before starting the mining game
+#	- there couldbe delays in propagation so its best to start working on txns as they are added in the current block
+# input
+#	- smart contract byte code (when deploying)
+#	- smart contract args (when calling functions of smart contract)
+# nonce
+#	- this is NOT the nonce used in mining process
+#	- this is NOT the block nonce
+#	- here, the nonce gets incremented for every txn sent on the network by the sender
+#	- it is then used to create unique address for the contract
+# to
+#	- address of receiver if ether being transferred
+#	- its 0x0 for us since we are deploying smart contract
+# transactionIndex
+#	- the index of the txn in the block
+#	- will always be 0 for testrpc since it only uses one txn in each block
+#	- on mainnet, this could be any number since there would more than 1 txn in each block
+#	- on mainnet, also possible that the block has only 1 txn (was common when all this was new and not many people were creating txns)
+# value
+#	- amount of ethers being transferred in WEI
+#	- for us, its 0 since we simply deployed the contract
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# For block inspection details, follow the next file
+
+------------------------------------------------------------------------------------------------------------------------------

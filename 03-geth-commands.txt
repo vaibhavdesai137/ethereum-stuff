@@ -11,7 +11,9 @@
 # We can also do "geth --datadir=./chaindata console" to get the console while running geth in the same window
 # But its too confuisng since eth logs keep getting printed there.
 # Make sure the datadir matches where you blockchain data is stored (you may be running multiple nodes)
-# 
+# Attaching directly to rpc port also works
+# geth attach http://localhost:8545
+
 geth attach ~/Library/Ethereum/geth.ipc 
 
 Welcome to the Geth JavaScript console!

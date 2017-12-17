@@ -1,0 +1,94 @@
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# How is GAS calculated...
+
+# The txn hash of some contract, Migrations contract in this case
+> eth.getTransaction('0xe1584a109bc67f20f627af62d9a4e984fdc1f51a001b66e174b0aa56dcab49a2');
+{
+  ...
+  hash: "0xe1584a109bc67f20f627af62d9a4e984fdc1f51a001b66e174b0aa56dcab49a2",
+  input: "0x6060604052341561000c57fe5b5b60008...daf07a10029",
+  ...
+}
+
+# The input is the byte code created by solidity from our source code
+# The same can be verified from truffle console
+
+truffle(development)> Migrations.binary
+'0x6060604052341561000c57fe5b5b60008...daf07a10029'
+
+# So now this binary needs to be executed on every EVM so it has to be platform-independent
+# Nodes/Miners can be on linux, windows, mac, etc.
+# So each node then has to convert the above binary into OPCODES/INSTRUCTIONS
+# Those opcodes are then executed on the EVM based on the platform that EVM is running on
+# JVM and java class file is the analogy here
+
+# Etherscan has a tool to get the opcodes from the binary
+# https://etherscan.io/opcode-tool
+# Decoded Bytecode using the binary above:
+
+[1] PUSH1 0x60 
+[3] PUSH1 0x40 
+...
+...
+...
+[453] MLOAD 
+[454] MUL 
+[455] CALL 
+
+# Each OPCODE has an associated gas value and is specified in eth yellow paper
+# That is how the gas is calculated and its not always accurate
+# Now, its very much possible that we have loops and other long running stuff in our code
+# Example code:
+
+// Loop n times
+// 		- Add operation
+// 		- Mul operation
+
+# Assume the following:
+# ADD = 10 gas, MUL = 20 gas
+# gasUsage = 0, gasLimit = 100
+
+# for (i from 1 to 100) {
+# 	gasUsage = gasUsage + (10) <----- ADD
+# 	gasUsage = gasUsage + (20) <----- MUL
+#	if (gasUsage > gasLimit) {
+#		fail the txn	
+# 	}
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# For ether transfers:
+# The gas usage is always constant irrespective of the amount of ethers being transferred
+# Even BTC charges fees based on the amount (but still less than what PYPL would charge)
+# Current ongoing gas for about 200USD =~ 0.2$
+# CHEAP!!!
+
+# For smart contracts:
+#	- Gas is used:
+# 		- When the contract is deployed
+# 		- When the contract's function is invoked
+#	- No gas is used:
+#		- CONST functions are executed
+
+# When the contract is deployed, gas is computed using:
+# 	- Based on the size of total code
+#	- Based on the instructions (opcodes) in the constructor
+
+# When the contract's function is invoked, gas is computed using:
+# 	- Based on the instructions (opcodes) in the constructor
+
+------------------------------------------------------------------------------------------------------------------------------
+
+VERY IMPORTANT:
+- TO WRITE EFFICIENT CODE
+- To USE MINIMAL VARIABLES
+- SELECT CORRECT DATA TYPES
+- WRITE MINIMAL CODE
+
+SOLIDITY COMPILER DOES OPTIMIZE A LOT BEFORE CREATING THE BINARY BUT STILL ITS NECESSARY TO FOLLOW THE ABOVE. OTHERWISE IT WILL RESULT IN HIGHER GAS FEES.
+
+
+
+------------------------------------------------------------------------------------------------------------------------------

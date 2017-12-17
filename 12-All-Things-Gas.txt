@@ -1,0 +1,62 @@
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# Continuing from the previous text file...
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# Four things about gas:
+#
+# Gas:
+#	- This is units of gas the txn creator is offering
+#	- This is the upper bound
+#	- Any txn WILL NEVER use more gas than specified by the sender
+# Gas Price:
+#	- This is the price per unit of gas the txn creator is willing to pay
+#	- Offered in WEI
+#	- So essentially, the creator is offering a total fees of (#gas x #gas-price)
+# Gas Usage:
+#	- This is the actual gas used for verfifying the txn
+#	- For smart contracts with buggy code, if the code keeps executing, gas usage will keep going up
+#	- If (#gas-usage < #gas-offered), the excessive gas is returned to sender
+#	- If (#gas-usage > #gas-offered), the txn is marked as failed right there
+# 	- if the txn is cancelled (for whatever reason), the gas is still paid out because the miner had to use the computational power
+# 	- The sender will never get the whole gas back
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# From testrpc logs for 1st txn:
+# eth_sendTransaction
+# 	- Transaction: 0xe1584a109bc67f20f627af62d9a4e984fdc1f51a001b66e174b0aa56dcab49a2
+#  	- Gas usage: 186938
+
+> eth.getTransaction('0xe1584a109bc67f20f627af62d9a4e984fdc1f51a001b66e174b0aa56dcab49a2');
+{
+  ...
+  gas: 4712388,
+  gasPrice: 100000000000
+  ...
+}
+
+# Sender was offering the following:
+# Max gas = 4712388
+# WEIs per unit of gas = 100000000000
+
+# GAS OFFERED:
+# So, max txn fees beings offered = 4712388 * 100000000000 WEIs
+# which is 0.04712388 ETH
+
+# GAS USED:
+# But from the testrpc logs, the actual gas usage was only 186938 for that txn
+# 186938 * 100000000000
+# which is 0.0186938 ETH
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# CONST function calls in smart contract NEVER create a txn
+# The method is executed on the node itself and no gas is used
+
+# Functions without CONST will result a new txn on the block
+# And the same dicussion about gas, gas prices, gas limit, etc. applies
+
+------------------------------------------------------------------------------------------------------------------------------

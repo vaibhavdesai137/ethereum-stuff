@@ -1,29 +1,25 @@
 App = {
+
   web3Provider: null,
   contracts: {},
 
-  init: function() {
-    // Load pets.
-    $.getJSON('../pets.json', function(data) {
-      var petsRow = $('#petsRow');
-      var petTemplate = $('#petTemplate');
+  init: function () {
 
-      for (i = 0; i < data.length; i ++) {
-        petTemplate.find('.panel-title').text(data[i].name);
-        petTemplate.find('img').attr('src', data[i].picture);
-        petTemplate.find('.pet-breed').text(data[i].breed);
-        petTemplate.find('.pet-age').text(data[i].age);
-        petTemplate.find('.pet-location').text(data[i].location);
-        petTemplate.find('.btn-adopt').attr('data-id', data[i].id);
+    // Show an item by default
+    var itemsRow = $('#itemsRow');
+    var itemTemplate = $('#itemTemplate');
 
-        petsRow.append(petTemplate.html());
-      }
-    });
+    itemTemplate.find('.panel-title').text("iPhone 7");
+    itemTemplate.find('.item-description').text("Smartphone with the most jacked up price. But you should still buy it.");
+    itemTemplate.find('.item-price').text("10.23");
+    itemTemplate.find('.item-seller').text("0x01234567890123456789012345678901");
+
+    itemsRow.append(itemTemplate.html());
 
     return App.initWeb3();
   },
 
-  initWeb3: function() {
+  initWeb3: function () {
     /*
      * Replace me...
      */
@@ -31,7 +27,7 @@ App = {
     return App.initContract();
   },
 
-  initContract: function() {
+  initContract: function () {
     /*
      * Replace me...
      */
@@ -39,17 +35,17 @@ App = {
     return App.bindEvents();
   },
 
-  bindEvents: function() {
+  bindEvents: function () {
     $(document).on('click', '.btn-adopt', App.handleAdopt);
   },
 
-  markAdopted: function(adopters, account) {
+  markAdopted: function (adopters, account) {
     /*
      * Replace me...
      */
   },
 
-  handleAdopt: function(event) {
+  handleAdopt: function (event) {
     event.preventDefault();
 
     var petId = parseInt($(event.target).data('id'));
@@ -61,8 +57,8 @@ App = {
 
 };
 
-$(function() {
-  $(window).load(function() {
+$(function () {
+  $(window).load(function () {
     App.init();
   });
 });

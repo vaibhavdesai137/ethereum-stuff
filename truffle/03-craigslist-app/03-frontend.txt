@@ -1,0 +1,11 @@
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# All web stuff lives under "src" directory
+# Create src/index.html
+# Create src/js/app.js
+
+# By now, the UI should show a default item listing
+# And there should be a modal to list a new item
+
+------------------------------------------------------------------------------------------------------------------------------

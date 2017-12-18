@@ -1,0 +1,67 @@
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# Start testrpc
+# Attach geth to it
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# Instead of doing "truffle init", we'll use truffle boxes
+# Boxes are DApps with all boilerplate code available for serveral frameworks
+# We'll use the pet-shop project truffle created and modify that
+
+truffle unbox pet-shop
+# Downloading...
+# Unpacking...
+# Setting up...
+# Unbox successful. Sweet!
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# Create Craigslist.sol
+# Create 2_deploy_contracts.js
+# Test the contract
+
+# Lets interact using truffle console
+> truffle console
+
+# Get contract instance
+truffle(development)> Craigslist.deployed().then(function(instance) { app = instance; });
+
+# Invoke getItem(), everthing initialized to default
+truffle(development)> app.getItem.call()
+[ '0x0000000000000000000000000000000000000000',
+  '',
+  '',
+  { [String: '0'] s: 1, e: 0, c: [ 0 ] } ]
+
+# Invoke listItem(), everthing initialized to default
+# Need to pass "from" since this is a txn
+truffle(development)> app.listItem("iPhone 7", "Need to buy iPhone 8 hence selling", web3.toWei(3, "ether"), {from: web3.eth.accounts[1]}); 
+{ tx: '0x5df55df9d1aab8b2c945d1e4736bc349728bf6666184e1ed11227fe6cb6b9625',
+  receipt: 
+   { transactionHash: '0x5df55df9d1aab8b2c945d1e4736bc349728bf6666184e1ed11227fe6cb6b9625',
+     ...},
+  logs: [] }
+
+# Invoke getItem() to verify everything looks good
+truffle(development)> app.getItem.call();
+[ '0x903140f28afb1af677ed3c17dbbfe61d18ce4f90',
+  'iPhone 7',
+  'Need to buy iPhone 8 hence selling',
+  { [String: '3000000000000000000'] s: 1, e: 18, c: [ 30000 ] } ]
+truffle(development)> 
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# Check balances of account0 and account1
+
+# Paid txn fees for deploying the contract
+> web3.fromWei(eth.getBalance(eth.accounts[0]), "ether");
+99.9388901
+
+# Paid txn fees for selling the item via contract
+> web3.fromWei(eth.getBalance(eth.accounts[1]), "ether");
+99.98522
+
+------------------------------------------------------------------------------------------------------------------------------

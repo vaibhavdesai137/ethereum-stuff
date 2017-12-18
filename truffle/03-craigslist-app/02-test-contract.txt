@@ -1,0 +1,38 @@
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# truffle uses mocha and chai for testing
+# Testing should always happen in the following order:
+#   - test using tesrpc
+#   - test using private blockchain
+#   - test on ethereum test network (kovan, rinkeby, etc.)
+
+# Testing the contract involves deploying the contract
+# Calling contract functions
+# Since both of the above create txns, NEVER TEST ON MAINNET
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# Create test/CraigslistHappyPath.js
+# Test the contract
+
+> truffle test
+# Using network 'development'.
+# Contract: Craigslist
+#    ✓ all variables should all be empty
+#    ✓ all variables should have correct values (63ms)
+# 2 passing (118ms)
+
+# Individual tests can be invoked using
+> truffle test test/CraigslistHappyPath.js
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# For the above test, 5 txns will be created:
+# Txn 1: Deploying Migrations contract (internal to truffle)
+# Txn 2: Updating the state of Migrations contract (internal to truffle)
+# Txn 3: Deploying Craigslist contract
+# Txn 4: Updating the state of Craigslist contract (internal to truffle)
+# Txn 5: Calling the sellItem() function of Craigslist contract
+
+------------------------------------------------------------------------------------------------------------------------------

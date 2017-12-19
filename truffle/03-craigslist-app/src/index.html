@@ -34,9 +34,13 @@
             <div class="row panel panel-default">
                 <div class="panel-heading clearfix">
                     <div class="panel-title">
-                        <button class="btn btn-info btn-md pull-right" data-toggle="modal" data-target="#listItem">List a new item</button>
+                        <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#listItem">List a new item</button>
+                        <button class="btn btn-info btn-sm" data-toggle="collapse" data-target="#events">Events</button>
                     </div>
                 </div>
+                <ul id="events" class="collapse list-group">
+                    <!-- EVENTS LOAD HERE -->
+                </ul>
             </div>
             <div id="itemsRow" class="row">
                 <!-- ITEMS LOAD HERE -->
@@ -65,7 +69,7 @@
                         </div>
                         <div class="col-md-1"></div>
                         <div class="col-md-1">
-                            <button class="btn btn-success btn-md" data-toggle="modal" data-target="#buyItem">Buy</button>
+                            <button class="btn btn-success btn-md pull-right" data-toggle="modal" data-target="#buyItem">Buy</button>
                         </div>
                     </div>
                 </div>

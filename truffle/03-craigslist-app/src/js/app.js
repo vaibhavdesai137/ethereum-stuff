@@ -63,6 +63,9 @@ App = {
             // Set the provider for our contract
             App.contracts.Craigslist.setProvider(App.web3Provider);
 
+            // Attach event listeners
+            App.eventListeners();
+
             // Load ll items from contract
             return App.reloadItems();
         });
@@ -130,11 +133,35 @@ App = {
                 from: itemSeller,
                 gas: 500000
             });
-        }).then(function(item) {
-            App.reloadItems();
+        // Not needed since we added an event listener now
+        // No need to explicitly reload items
+        // }).then(function(item) {
+        //    App.reloadItems();
         }).catch(function(err) {
             console.log(err);
         });
+    },
+
+    // Listeners for all events from our contract
+    eventListeners: function() {
+
+        // Attach listener for listItem event
+        App.contracts.Craigslist.deployed().then(function(instance) {
+            instance.listItemEvent({}, {
+                fromBlock: 0,
+                toBlock: 'latest'
+            }).watch(function(err, event) {
+
+                // Update UI to show the new event
+                var msg = '<b>' + event.args._name + '</b> is for sale now...';
+                $('#events').append('<li class="list-group-item">' + msg + '</li>');
+
+                // Reload all items
+                App.reloadItems();
+
+            });
+        });
+
     }
 };
 

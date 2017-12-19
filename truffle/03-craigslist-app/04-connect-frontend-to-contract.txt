@@ -1,0 +1,15 @@
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# Now that we have the UI, we need to link the button actions to smart contract
+# This means we need to bind web3 from our js to a provider
+
+# If we open the DApp from MIST, it automatically injects web3
+# If we open via Chrome, Metamask will do the same
+# Without Mist/Metamask, we will have to provide the address for http provider hosting the eth node
+
+# Disable MetaMask for now
+
+
+
+------------------------------------------------------------------------------------------------------------------------------

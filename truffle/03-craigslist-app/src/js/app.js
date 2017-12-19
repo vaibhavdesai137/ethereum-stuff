@@ -1,64 +1,145 @@
 App = {
 
-  web3Provider: null,
-  contracts: {},
+    web3Provider: null,
+    contracts: {},
+    showDefaultItem: true,
+    account: null,
 
-  init: function () {
+    init: function() {
+        App.initWeb3();
+    },
 
-    // Show an item by default
-    var itemsRow = $('#itemsRow');
-    var itemTemplate = $('#itemTemplate');
+    // Set web3 provider for the app
+    initWeb3: function() {
 
-    itemTemplate.find('.panel-title').text("iPhone 7");
-    itemTemplate.find('.item-description').text("Smartphone with the most jacked up price. But you should still buy it.");
-    itemTemplate.find('.item-price').text("10.23");
-    itemTemplate.find('.item-seller').text("0x01234567890123456789012345678901");
+        // Check if we already have a web3 object injected
+        // MIST/MetaMask would do this
+        // If not, set our own provider
+        // Could be testrpc or any provider
+        if (typeof web3 !== 'undefined') {
+            App.web3Provider = web3.currentProvider;
+        } else {
+            App.web3Provider = new Web3.providers.HttpProvider('http://localhost:8545');
+        }
 
-    itemsRow.append(itemTemplate.html());
+        web3 = new Web3(App.web3Provider);
 
-    return App.initWeb3();
-  },
+        App.displayAccountInfo();
+        return App.initContract();
+    },
 
-  initWeb3: function () {
-    /*
-     * Replace me...
-     */
+    // Get the coinbase account and its balance to render on the UI
+    // web3 does not have promises thats why using callbacks
+    displayAccountInfo: function() {
+        web3.eth.getCoinbase(function(err, account) {
+            if (err == null) {
+                App.account = account;
+                $('#account').text(account);
+                web3.eth.getBalance(account, function(err, balance) {
+                    if (err == null) {
+                        accountBalanceInEther = web3.fromWei(balance, "ether");
+                        $('#accountBalance').text(accountBalanceInEther + " ETH");
+                    }
+                });
+            }
+        });
+    },
 
-    return App.initContract();
-  },
+    // Initialize our Craigslist json
+    // Remember, the artifact (json) file is created by truffle during "truffle migrate"
+    initContract: function() {
 
-  initContract: function () {
-    /*
-     * Replace me...
-     */
+        // Craigslist.json is under build/contracts/Craigslist.json
+        // The following works from "src" dir because of the browser-sync pkg that truffle uses
+        // This is configured in bs-config.json
+        // "baseDir": ["./src", "./build/contracts"]
+        // This tells the lite server to look in both those directories for a requested file
+        $.getJSON('Craigslist.json', function(craigslistArtifact) {
 
-    return App.bindEvents();
-  },
+            // Use truffle to get contarct object by passing the atrifact file
+            // We can attach multiple contracts to App.contracts
+            App.contracts.Craigslist = TruffleContract(craigslistArtifact);
 
-  bindEvents: function () {
-    $(document).on('click', '.btn-adopt', App.handleAdopt);
-  },
+            // Set the provider for our contract
+            App.contracts.Craigslist.setProvider(App.web3Provider);
 
-  markAdopted: function (adopters, account) {
-    /*
-     * Replace me...
-     */
-  },
+            // Load ll items from contract
+            return App.reloadItems();
+        });
+    },
 
-  handleAdopt: function (event) {
-    event.preventDefault();
+    // Load all items from the contract
+    reloadItems: function() {
 
-    var petId = parseInt($(event.target).data('id'));
+        // Balance may have changed
+        App.displayAccountInfo();
 
-    /*
-     * Replace me...
-     */
-  }
+        // truffle uses promises
+        // same can be done using callbacks too
+        App.contracts.Craigslist.deployed().then(function(instance) {
+            return instance.getItem.call();
+        }).then(function(item) {
 
+            // no items available
+            if (item[0] == 0x0) {
+                return;
+            }
+
+            var itemSeller = (item[0] == App.account) ? "You" : item[0];
+            var itemName = item[1];
+            var itemDesc = item[2];
+            var itemPrice = web3.fromWei(item[3].toNumber(), "ether");
+
+            // Clear existing items
+            var itemsRow = $('#itemsRow');
+            itemsRow.empty();
+
+            var itemTemplate = $('#itemTemplate');
+            itemTemplate.find('.panel-title').text(itemName);
+            itemTemplate.find('.item-description').text(itemDesc);
+            itemTemplate.find('.item-price').text(itemPrice);
+            itemTemplate.find('.item-seller').text(itemSeller);
+
+            itemsRow.append(itemTemplate.html());
+
+        }).catch(function(err) {
+            console.log(err);
+        });
+    },
+
+    // Load all items from the contract
+    listItem: function(itemName, itemDesc, itemPrice) {
+
+        // Retrieve details from modal
+        var itemName = $('#item_name').val();
+        var itemDesc = $('#item_desc').val();
+        var itemPrice = parseInt($('#item_price').val()) || 0;
+        var itemPriceInWei = web3.toWei(itemPrice, "ether");
+        var itemSeller = App.account;
+
+        // validation
+        if (itemName.trim() == '' || itemDesc.trim() == '' || itemPrice == 0) {
+            console.log('invalid inputs for listing an item');
+            return;
+        }
+
+        // truffle uses promises
+        // same can be done using callbacks too
+        App.contracts.Craigslist.deployed().then(function(instance) {
+            return instance.listItem(itemName, itemDesc, itemPriceInWei, {
+                from: itemSeller,
+                gas: 500000
+            });
+        }).then(function(item) {
+            App.reloadItems();
+        }).catch(function(err) {
+            console.log(err);
+        });
+    }
 };
 
-$(function () {
-  $(window).load(function () {
-    App.init();
-  });
+$(function() {
+    $(window).load(function() {
+        App.init();
+    });
 });

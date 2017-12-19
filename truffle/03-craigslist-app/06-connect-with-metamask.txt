@@ -1,0 +1,42 @@
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# Now that everything is working via testrpc, we can try the same with Metamask
+# Our app.js is written in a way that if metamask/mist is available, web3 uses that as provider
+# So technically no code change is needed and it should just working
+
+# To test:
+# Run the file 05-testrpc-wth-custom-accounts.sh
+# It will create 3 test accounts with 100 ETH each
+# Go to metamask, change to "Localhost 8545" network
+# Go to accounts, import all 3 accounts using private key (available from testrpc console)
+
+# Switch accounts and try listing items
+# Metamask window will popup when a txn needs to be created (for listing)
+# Our listItem does need ethers to be transferred, just the gas
+# The account balances should reflect the change based on how much we paid for gas
+
+# Going forward we'll the same custom testrpc file to work off of 3 accounts
+
+$ ./05-testrpc-wth-custom-accounts.sh 
+# EthereumJS TestRPC v6.0.3 (ganache-core: 2.0.2)
+
+# Available Accounts
+# ==================
+# (0) 0x00d1ae0a6fc13b9ecdefa118b94cf95ac16d4ab0
+# (1) 0x1daa654cfbc28f375e0f08f329de219fff50c765
+# (2) 0xc2dbc0a6b68d6148d80273ce4d6667477dbf2aa7
+
+# Private Keys
+# ==================
+# (0) 351494a5ae8f9b70a2a2fd482146ab4578f61d4d796685c597ec6683635a940e
+# (1) 4cd491f96e6623edb52719a8d4d1110a87d8d83e3fa86f8e14007cb3831c0a2b
+# (2) 0ef40e0d6ada046010b6965d73603cabae1a119ca804f5d9e9a9ce866b0bea7d
+
+# Listening on localhost:8545
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# Import them in metamask and name them as craigslist-1, craigslist-2, craigslist-3
+
+------------------------------------------------------------------------------------------------------------------------------

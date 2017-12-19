@@ -11,6 +11,10 @@
 # Calling contract functions
 # Since both of the above create txns, NEVER TEST ON MAINNET
 
+# Also, "truffle test" deploys and destroys the contract after the test is done
+# The contracts are not persisted on the blockchain
+# You need to run "truffle migrate" to deploy and get the address out
+
 ------------------------------------------------------------------------------------------------------------------------------
 
 # Create test/CraigslistHappyPath.js

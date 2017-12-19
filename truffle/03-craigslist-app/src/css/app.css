@@ -1,9 +1,16 @@
 body {
-    padding-top: 40px;
+    padding-top: 20px;
 }
 
 .welcome {
-    font-size: 10px;
+    font-weight: bold;
+    font-size: 14px;
     display: inline;
     padding: 5px;
+}
+
+.container {
+    width: 1600px;
+    margin-left: auto;
+    margin-right: auto;
 }

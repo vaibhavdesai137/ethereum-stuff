@@ -1,0 +1,74 @@
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# testrpc is much different than full ethereum nodes
+# For example, testrpc:
+#   - has everything in-mmeory (start/stop loses all blocks)
+#   - block are mined right away giving the impression its synchronous (real nodes will take time)
+#   - difficulty is 0
+#   - all accounts are unlocked by default
+#   - each block has a single txn
+
+# At one point, we'll have to deploy to private node, test networks, main network
+# We'll deploy to private node in this one...
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# Refer to ethereum-stuff/01-setup-components.txt
+# Refer to ethereum-stuff/02-setup-blockchain.txt
+# Refer to ethereum-stuff/03-geth-commands.txt
+
+# Start geth
+# Detailed information available in the shell script
+./private-blockchain/startnode.sh 
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# Try testing our contracts via "truffle test"
+$ truffle test
+# Using network 'development'.
+# Error: authentication needed: password or unlock
+#    at Object.InvalidResponse (/Users/vaidesai/.nvm/versions/node/v6.11.3/lib/node_modules/truffle/build/cli.bundled.js:37047:16)
+#    ...
+#    ...
+#    at endReadableNT (_stream_readable.js:974:12)
+
+# This fails because accounts are locked
+# We need to explicitly unlock the "coinbase" account first
+
+# Attach geth console to unlock accounts
+$ geth attach
+
+> eth.accounts
+["0x4fdf533660f6dc6f99de1d72ac2851a1acf1bf0d", "0x0297074de7fbe97628a12950a273a3808ccaa5e2", "0x4138650371f74c8d4b763dc4410e6e786207b570", "0x88a8daf1c9233539023a10a501bdc36306cb42a0"]
+
+> personal.unlockAccount('0x4fdf533660f6dc6f99de1d72ac2851a1acf1bf0d', 'test123', 300000);
+true
+
+# Try testing our contracts again and again repeatedly
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# If you try running the tests again and again, you will notice that the "events" test sometimes passes and sometimes fails
+# This has to do with how we have written it
+# On testrpc, since everything is rocket fast, we never saw this issue
+# But on a real blockchain we are seeing this
+# The test needs to be re-written in a different way
+
+# Check the changes made to testcase #3 in test/CraigslistHappyPath.js
+
+# Now the test will pass all the time
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# Lets deploy the contract now
+# Make sure your MetMask sees the same account that is mining our blockchain and not the testrpc accounts
+$ truffle migrate --reset
+
+# Try creating a few listings
+# Kill our private node and start it again
+# You will still see those items
+# Its because they were created on our private actual blockchain (and not on testrp)
+# WooHoo
+
+------------------------------------------------------------------------------------------------------------------------------

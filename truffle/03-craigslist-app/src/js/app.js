@@ -133,15 +133,18 @@ App = {
                 from: itemSeller,
                 gas: 500000
             });
-        // Not needed since we added an event listener now
-        // No need to explicitly reload items
-        // }).then(function(item) {
-        //    App.reloadItems();
+        }).then(function(response) {
+            var txnHash = response.receipt.transactionHash;
+            var url = 'https://etherscan.io/tx/' + txnHash;
+            var aTag = '<a target="_blank" href="' + url + '">' + txnHash + '</a>';
+            var msg = '<strong>Success!</strong> You just created an ethereum transaction...<br/>' + aTag;
+            App.showAlert('success', msg);
         }).catch(function(err) {
-            console.log(err);
+            var msg = '<strong>Error!</strong> Something went wrong...<br/>' + err;
+            App.showAlert('error', msg);
         });
     },
-
+    
     // Listeners for all events from our contract
     eventListeners: function() {
 
@@ -162,6 +165,25 @@ App = {
             });
         });
 
+    },
+
+    showAlert: function(status, message) {
+
+        var divClass = 'alert';
+        if (status == 'success') {
+            divClass += ' alert-success';
+        } else {
+            divClass += ' alert-danger';
+        }
+
+        var div = '';
+        div += '<div class="' + divClass + '">';
+        div += '<a href="#" class="close" data-dismiss="alert">&times;</a>';
+        div += message;
+        div += '</div>';
+
+        $('#alerts').html(div);
+        $('#alerts').show();
     }
 };
 

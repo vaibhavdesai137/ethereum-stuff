@@ -71,3 +71,22 @@
 =============== Dec 16, 2017 (PST) ===============
 13:54:32.971838 db@close closing
 13:54:32.972373 db@close done T·525.013µs
+=============== Dec 19, 2017 (PST) ===============
+00:29:14.777164 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+00:29:14.779549 version@stat F·[0 1] S·2MiB[0B 2MiB] Sc·[0.00 0.02]
+00:29:14.779822 db@open opening
+00:29:14.780315 journal@recovery F·1
+00:29:14.783443 journal@recovery recovering @14
+00:29:14.790135 memdb@flush created L0@17 N·1682 S·89KiB "\x00\xfb\xed..W\x17\v,v53709":"\xfd\xf7\xb5..A\xeb\xa0,v54789"
+00:29:14.791803 version@stat F·[1 1] S·2MiB[89KiB 2MiB] Sc·[0.25 0.02]
+00:29:14.793047 db@janitor F·4 G·0
+00:29:14.793064 db@open done T·13.23106ms
+00:29:56.685428 table@compaction L0·1 -> L1·1 S·2MiB Q·55273
+00:29:56.814330 table@build created L1@20 N·36720 S·2MiB "\x00!?..+\xa0\xd4,v49651":"\xfe}+..\xfe\xb0\xf2,v41404"
+00:29:56.816790 table@build created L1@21 N·53 S·4KiB "\xfe}\u007f..j\xb7\x9c,v27746":"\xff\xfba..\x94\xec\xb0,v23602"
+00:29:56.817135 version@stat F·[0 2] S·2MiB[0B 2MiB] Sc·[0.00 0.02]
+00:29:56.817583 table@compaction committed F~ S-19KiB Ke·0 D·562 T·131.641325ms
+00:29:56.817766 table@remove removed @17
+00:29:56.818168 table@remove removed @16
+01:18:00.035283 db@close closing
+01:18:00.056894 db@close done T·21.606467ms

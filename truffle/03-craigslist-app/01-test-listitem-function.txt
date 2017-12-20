@@ -28,9 +28,10 @@ truffle unbox pet-shop
 # Get contract instance
 truffle(development)> Craigslist.deployed().then(function(instance) { app = instance; });
 
-# Invoke getItem(), everthing initialized to default
-truffle(development)> app.getItem.call()
+# Invoke getItemDetails(), everthing initialized to default
+truffle(development)> app.getItemDetails.call()
 [ '0x0000000000000000000000000000000000000000',
+  '0x0000000000000000000000000000000000000000'
   '',
   '',
   { [String: '0'] s: 1, e: 0, c: [ 0 ] } ]
@@ -44,9 +45,10 @@ truffle(development)> app.listItem("iPhone 7", "Need to buy iPhone 8 hence selli
      ...},
   logs: [] }
 
-# Invoke getItem() to verify everything looks good
-truffle(development)> app.getItem.call();
+# Invoke getItemDetails() to verify everything looks good
+truffle(development)> app.getItemDetails.call();
 [ '0x903140f28afb1af677ed3c17dbbfe61d18ce4f90',
+  '0x0000000000000000000000000000000000000000',
   'iPhone 7',
   'Need to buy iPhone 8 hence selling',
   { [String: '3000000000000000000'] s: 1, e: 18, c: [ 30000 ] } ]

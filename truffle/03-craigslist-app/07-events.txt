@@ -18,7 +18,7 @@ truffle(development)> Craigslist.deployed().then(function(instance) { app = inst
 # The 1st {} ---> for filters on the event data itself (we cann filetr on seller since our contract indexes that)
 # The 2nd {} ---> for filters on the blockhain event
 
-truffle(development)> var listItemEventWatcher = app.listItemEvent({}, {fromBlock: 0, toBlock: 'latest'}).watch(function(err, event){console.log(event)});
+truffle(development)> var itemListedEventWatcher = app.itemListedEvent({}, {fromBlock: 0, toBlock: 'latest'}).watch(function(err, event){console.log(event)});
 undefined
 
 # List an item and see if the event is captured
@@ -32,7 +32,7 @@ truffle(development)> app.listItem("some-item", "some-item-desc", web3.toWei(10,
    [ { logIndex: 0,
        transactionIndex: 0,
        ...
-       event: 'listItemEvent',
+       event: 'itemListedEvent',
        args: [Object] } ] }
 
 # And since we registered a callback with the event, the event details get logged to console       
@@ -43,7 +43,7 @@ truffle(development)> { logIndex: 0,
   blockNumber: 14,
   address: '0xd3255156d2c9c92799e7db35a3c89bfa6b2fbf13',
   type: 'mined',
-  event: 'listItemEvent',
+  event: 'itemListedEvent',
   args: 
    { _seller: '0x00d1ae0a6fc13b9ecdefa118b94cf95ac16d4ab0',
      _name: 'some-item',
@@ -51,7 +51,8 @@ truffle(development)> { logIndex: 0,
      _price: { [String: '10000000000000000000'] s: 1, e: 19, c: [Object] } } }
 
 # Stop watching
-listItemEventWatcher.stopWatching();
+itemListedEventWatcher.stopWatching();
+
 ------------------------------------------------------------------------------------------------------------------------------
 
 # Add a new test case in test/CraigslistHappyPath.js

@@ -1,0 +1,28 @@
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# Txns can be canceled using any of the following:
+#   - throw ---> legacy way, not used anymore, only for backward comptability
+#   - assert ---> test for internal errors, if txn canceled bcoz of assert, it means we have a bug in the code
+#   - require ---> test for preconditions
+#   - revert ---> other business errors (eg: divide by zero )
+
+# Some functions can interrupt the execution internally as if it were explicitly canceled
+# For example: 
+# You can send ethers to someone using "send" or "transfer"
+# SEND(): 
+#   - Will not revert the transaction automatically
+#   - Dev will need to capture return value from send() to decide if the value was sent or not
+#   - Dev will need to explicit call revert() to restore all states
+# TRANSFER(): 
+#   - Newly added (and now is the standard to transfer value)
+#   - Automatically calls revert() if the value was not transferred
+
+# When a txn gets canceled, the following happens:
+#   - all states are reverted
+#   - refund the ethers back to sender
+#   - function execution is interrupted
+#   - all gas used up to the point of interruption will NOT be returned
+#   - no further gas will be used
+
+------------------------------------------------------------------------------------------------------------------------------

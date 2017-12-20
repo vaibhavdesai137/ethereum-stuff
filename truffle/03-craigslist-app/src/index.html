@@ -17,9 +17,22 @@
 </head>
 
 <body>
+
     <div class="container">
 
-        <div class="jumbotron text-center">
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="navbar-inner navbar-content-center text-center">
+                <p class="text-muted pull-left" style="color: #FFF">
+                    <br/> &nbsp;&nbsp;&nbsp; Vaibhav Desai &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+                    <a target="_blank" href="https://github.com/vaibhavdesai137/ethereum-stuff/tree/master/truffle/03-craigslist-app">Source Code</a>
+                </p>
+                <p class="text-muted pull-right" style="padding-right: 35px; color: #FFF">
+                    <br/> &nbsp;&nbsp;&nbsp; Connected to <span id="node"></span> (<span id="network"></span>)
+                </p>
+            </div>
+        </nav>
+
+        <div class="jumbotron text-center" style="margin-top: 35px;">
             <h2>Craigslist DApp</h2>
         </div>
 
@@ -33,12 +46,16 @@
             <div class="row panel panel-default">
                 <div class="panel-heading clearfix">
                     <div class="panel-title">
-                        <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#listItem">List a new item</button>
-                        <button class="btn btn-info btn-sm" data-toggle="collapse" data-target="#events">Events</button>
+                        <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#listItem">List a new item</button> &nbsp;&nbsp;|&nbsp;&nbsp;
+                        <button class="btn btn-info btn-sm" data-toggle="collapse" data-target="#itemsListed">Items Listed</button>
+                        <button class="btn btn-info btn-sm" data-toggle="collapse" data-target="#itemsBought">Items Bought</button>
                     </div>
                 </div>
-                <ul id="events" class="collapse list-group">
-                    <!-- EVENTS LOAD HERE -->
+                <ul id="itemsListed" class="collapse list-group">
+                    <!-- LISTED ITEMS LOAD HERE -->
+                </ul>
+                <ul id="itemsBought" class="collapse list-group">
+                    <!-- BOUGHT ITEMS LOAD HERE -->
                 </ul>
             </div>
             <div id="alerts" class="row">
@@ -57,23 +74,25 @@
                     <h3 class="panel-title"></h3>
                 </div>
                 <div class="panel-body">
-                    <div class="row-md-12">
-                        <div class="col-md-10">
-                            <strong>Item Description</strong>:
-                            <span class="item-description"></span>
-                            <br/>
-                            <strong>Item Price (ETH)</strong>:
-                            <span class="item-price"></span>
-                            <br/>
-                            <strong>Item Sold by</strong>:
-                            <span class="item-seller"></span>
-                            <br/>
-                        </div>
-                        <div class="col-md-1"></div>
-                        <div class="col-md-1">
-                            <button class="btn btn-success btn-md pull-right" data-toggle="modal" data-target="#buyItem">Buy</button>
-                        </div>
-                    </div>
+                    <strong>Item Description</strong>:
+                    <span class="item-description"></span>
+                    <br/>
+                    <strong>Item Price (ETH)</strong>:
+                    <span class="item-price"></span>
+                    <br/>
+                    <strong>Item Status</strong>:
+                    <span class="item-status"></span>
+                    <br/>
+                    <br/>
+                    <strong>Item Sold By</strong>:
+                    <span class="item-seller"></span>
+                    <br/>
+                    <strong>Item Bought By</strong>:
+                    <span class="item-buyer"></span>
+                    <br/>
+                </div>
+                <div class="panel-footer">
+                    <button class="btn btn-success btn-md btn-buy" onclick="App.buyItem(); return false;">Buy</button>
                 </div>
             </div>
         </div>
@@ -121,14 +140,7 @@
     </div>
 
     <div id="footer" class="container">
-        <nav class="navbar navbar-default navbar-fixed-bottom">
-            <div class="navbar-inner navbar-content-center text-center">
-                <p class="text-muted">
-                    <br/>
-                    <b>Vaibhav Desai</b>
-                </p>
-            </div>
-        </nav>
+
     </div>
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->

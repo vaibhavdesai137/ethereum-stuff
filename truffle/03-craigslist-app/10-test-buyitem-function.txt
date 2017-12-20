@@ -1,0 +1,102 @@
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# Start testrpc using custom account script
+# Attach geth to it
+# Run "truffle test" to ensure test cases pass
+# Run "truffle migrate" to deploy the contract
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# Test the buyItem function
+# Lets interact using truffle console
+> truffle console
+
+# Get contract instance
+truffle(development)> Craigslist.deployed().then(function(instance) { app = instance; });
+
+# We'll list the item using web3.eth.accounts[1]
+# We'll buy the item using web3.eth.accounts[2]
+
+# Check balances
+# Seller
+truffle(development)> web3.fromWei(web3.eth.getBalance(web3.eth.accounts[1]), "ether").toNumber();
+99.9804398
+# Buyer
+truffle(development)> web3.fromWei(web3.eth.getBalance(web3.eth.accounts[2]), "ether").toNumber();
+100
+
+# List a new item first
+truffle(development)> app.listItem("iPhone 7", "Need to buy iPhone 8 hence selling", web3.toWei(10, "ether"), {from: web3.eth.accounts[1]}); 
+
+# Invoke getItemDetails() to verify everything looks good
+truffle(development)> app.getItemDetails.call();
+[ '0x1daa654cfbc28f375e0f08f329de219fff50c765',
+  '0x0000000000000000000000000000000000000000',
+  'iPhone 7',
+  'Need to buy iPhone 8 hence selling',
+  { [String: '10000000000000000000'] s: 1, e: 19, c: [ 100000 ] } ]
+
+# Check seller balance (redcued becos seller paid for gas)
+truffle(development)> web3.fromWei(web3.eth.getBalance(web3.eth.accounts[1]), "ether").toNumber();
+99.9738433
+
+# Buy the item now  
+
+# TEST CASE - 1 (Seller trying to buy the item)
+# Will be reverted because of our checks using require(...)
+# Gas will be used till the point txn was reverted
+truffle(development)> app.buyItem({from: web3.eth.accounts[1], value: web3.toWei(5, "ether")}); 
+Error: VM Exception while processing transaction: revert
+
+# TEST CASE - 2 (Sending less than item price)
+# Will be reverted because of our checks using require(...)
+# Gas will be used till the point txn was reverted
+truffle(development)> app.buyItem({from: web3.eth.accounts[2], value: web3.toWei(5, "ether")}); 
+Error: VM Exception while processing transaction: revert
+
+# TEST CASE - 3 (Should go through)
+# Should emit itemBoughtEvent as well 
+truffle(development)> app.buyItem({from: web3.eth.accounts[2], value: web3.toWei(10, "ether")}); 
+{ tx: '0xe992aca531ecc6f548cd0e81de9ecb55f8f9834a4da9f772c751a3612558128e',
+  receipt: 
+   { transactionHash: '0xe992aca531ecc6f548cd0e81de9ecb55f8f9834a4da9f772c751a3612558128e',
+     ... },
+  logs: 
+   [ { ...
+       event: 'itemBoughtEvent' } ] }
+
+# TEST CASE - 4 (Trying to buy an already sold item)
+# Will be reverted because of our checks using require(...)
+# Gas will be used till the point txn was reverted
+truffle(development)> app.buyItem({from: web3.eth.accounts[2], value: web3.toWei(5, "ether")}); 
+Error: VM Exception while processing transaction: revert
+
+# Verify item details to ensure we have a buyer now
+ '0x1daa654cfbc28f375e0f08f329de219fff50c765',
+  '0xc2dbc0a6b68d6148d80273ce4d6667477dbf2aa7',
+  'iPhone 7',
+  'Need to buy iPhone 8 hence selling',
+  { [String: '10000000000000000000'] s: 1, e: 19, c: [ 100000 ] } ]
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# Check balances of account1 and account2
+# Since the buying was successful, seller has 10 ethers more and buyer has 10 ethers less
+
+truffle(development)> web3.fromWei(web3.eth.getBalance(web3.eth.accounts[1]), "ether").toNumber();
+109.9716402
+
+truffle(development)> web3.fromWei(web3.eth.getBalance(web3.eth.accounts[2]), "ether").toNumber();
+89.9923389
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# Add test cases for buyItem in test/CraigslistHappyPath.js
+# Add exception test cases for buyItem in test/CraigslistExceptions.js
+# Don't forget that each test suite is a new contract deployment in truffle
+# So:
+# test/CraigslistHappyPath.js <--- 1st contract deployment
+# test/CraigslistException.js <--- 2nd contract deployment
+
+------------------------------------------------------------------------------------------------------------------------------

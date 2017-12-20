@@ -1,0 +1,10 @@
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# Changed our contract to now store multiple items using "mapping"
+# Used a "struct" to define an item
+# listItem() does not have to change in terms of function args but internally it now adds a new item to map
+# buyItem() has to change since it will now need an id to retrieve the item from the map
+# Also, no point showing all items on UI, only items still available for sale will be showing
+# Updated both test suites to honor the new contract
+------------------------------------------------------------------------------------------------------------------------------

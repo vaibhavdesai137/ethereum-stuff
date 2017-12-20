@@ -2,8 +2,8 @@ App = {
 
     web3Provider: null,
     contracts: {},
-    showDefaultItem: true,
     account: null,
+    loading: false,
 
     init: function() {
         App.initWeb3();
@@ -33,6 +33,11 @@ App = {
     displayNetworkInfo: function() {
 
         web3.version.getNode(function(err, node) {
+
+            if (err) {
+                alert("Unable to detect ethereum network");
+            }
+
             $('#node').html(node);
         });
 
@@ -110,59 +115,69 @@ App = {
         });
     },
 
-    // Load all items from the contract
+    // Load items on sale from the contract
     reloadItems: function() {
+
+        // No need to bombard our blockchain
+        if (App.loading) {
+            return;
+        }
+        App.loading = true;
 
         // Balance may have changed
         App.displayAccountInfo();
 
         // truffle uses promises
         // same can be done using callbacks too
+        var contractInstance;
         App.contracts.Craigslist.deployed().then(function(instance) {
-            return instance.getItemDetails.call();
-        }).then(function(item) {
-
-            // no items available
-            if (item[0] == 0x0) {
-                return;
-            }
+            contractInstance = instance;
+            return instance.getItemsOnSale.call();
+        }).then(function(itemIds) {
 
             // Clear existing items
             var itemsRow = $('#itemsRow');
             itemsRow.empty();
 
-            var itemTemplate = $('#itemTemplate');
-
-            // hide buy button if the app.account is the seller of if already sold
-            if (item[0] == App.account || item[5] == 'Sold') {
-                itemTemplate.find('.btn-buy').hide();
+            // Query details for each id and update the UI
+            for (var i = 0; i < itemIds.length; i++) {
+                var itemId = itemIds[i];
+                contractInstance.items.call(itemId).then(function(item) {
+                    App.displayItem(item[0], item[1], item[2], item[3], item[4], item[5], item[6]);
+                });
             }
-
-            // item details
-            var itemSeller = item[0];
-            var itemBuyer = item[1];
-            var itemName = item[2];
-            var itemDesc = item[3];
-            var itemPrice = web3.fromWei(item[4].toNumber(), "ether");
-            var itemStatus = item[5];
-
-            // Update the buy button with the price
-            // This avoids calling getItemDetails() again to fetch the item price when one wants to buy
-            itemTemplate.find('.btn-buy').attr('data-value', itemPrice);
-
-            // etherscan.io/address/0x2944e7a6e74cd70ba15bffbb070c1fcb8046807c
-            itemTemplate.find('.panel-title').text(itemName);
-            itemTemplate.find('.item-description').text(itemDesc);
-            itemTemplate.find('.item-price').text(itemPrice);
-            itemTemplate.find('.item-status').text(itemStatus);
-            itemTemplate.find('.item-seller').html(App.getEtherscanAnchorTag('address', itemSeller));
-            itemTemplate.find('.item-buyer').html(App.getEtherscanAnchorTag('address', item[1]));
-
-            itemsRow.append(itemTemplate.html());
-
+            App.loading = false;
         }).catch(function(err) {
+            App.loading = false;
             console.log(err);
         });
+    },
+
+    // Render the given item on UI
+    displayItem: function(id, seller, buyer, name, desc, price, status) {
+
+        var itemTemplate = $('#itemTemplate');
+        var priceInEth = web3.fromWei(price.toNumber(), "ether");
+
+        // hide buy button if the app.account is the seller of if already sold
+        if (seller == App.account || status == 'Sold') {
+            itemTemplate.find('.btn-buy').hide();
+        }
+
+        // Update the buy button with the id & the price
+        // This avoids calling getItemDetails() again to fetch the item price when one wants to buy
+        itemTemplate.find('.btn-buy').attr('data-id', id);
+        itemTemplate.find('.btn-buy').attr('data-value', price);
+
+        // etherscan.io/address/0x2944e7a6e74cd70ba15bffbb070c1fcb8046807c
+        itemTemplate.find('.panel-title').text(name);
+        itemTemplate.find('.item-description').text(desc);
+        itemTemplate.find('.item-price').text(priceInEth);
+        itemTemplate.find('.item-status').text(status);
+        itemTemplate.find('.item-seller').html(App.getEtherscanAnchorTag('address', seller));
+        itemTemplate.find('.item-buyer').html(App.getEtherscanAnchorTag('address', buyer));
+
+        itemsRow.append(itemTemplate.html());
     },
 
     // Load all items from the contract
@@ -171,7 +186,7 @@ App = {
         // Retrieve details from modal
         var itemName = $('#item_name').val();
         var itemDesc = $('#item_desc').val();
-        var itemPrice = parseInt($('#item_price').val()) || 0;
+        var itemPrice = parseFloat($('#item_price').val()) || 0;
         var itemPriceInWei = web3.toWei(itemPrice, "ether");
         var itemSeller = App.account;
 
@@ -205,13 +220,14 @@ App = {
         event.preventDefault();
 
         var itemBuyer = App.account;
-        var itemPrice = parseInt($(event.target).data('value'));
+        var itemId = parseInt($(event.target).data('id'));
+        var itemPrice = parseFloat($(event.target).data('value'));
         var itemPriceInWei = web3.toWei(itemPrice, "ether");
 
         // truffle uses promises
         // same can be done using callbacks too
         App.contracts.Craigslist.deployed().then(function(instance) {
-            return instance.buyItem({
+            return instance.buyItem(itemId, {
                 from: itemBuyer,
                 gas: 500000,
                 value: itemPriceInWei
@@ -230,33 +246,34 @@ App = {
     // Listeners for all events from our contract
     eventListeners: function() {
 
-        // Attach listener for listItem event
         App.contracts.Craigslist.deployed().then(function(instance) {
+
+            // Attach listener for listItem event
             instance.itemListedEvent({}, {
                 fromBlock: 0,
                 toBlock: 'latest'
             }).watch(function(err, event) {
 
                 // Update UI to show the new event
-                var msg = '<b>' + event.args._name + '</b> is listed...';
-                $('#itemsListed').append('<li class="list-group-item">' + msg + '</li>');
+                var aTag = App.getEtherscanAnchorTag('address', event.args._seller);
+                var msg = aTag + ' ---> listed <span style="padding: 3px; background-color: yellow; font-size: 14px"><b>' + event.args._name + '</b></span> for sale';
+                $('#events').append('<li class="list-group-item">' + msg + '</li>');
 
                 // Reload all items
                 App.reloadItems();
 
             });
-        });
 
-        // Attach listener for buyItem event
-        App.contracts.Craigslist.deployed().then(function(instance) {
+            // Attach listener for buyItem event
             instance.itemBoughtEvent({}, {
                 fromBlock: 0,
                 toBlock: 'latest'
             }).watch(function(err, event) {
 
                 // Update UI to show the new event
-                var msg = '<b>' + event.args._name + '</b> was bought...';
-                $('#itemsBought').append('<li class="list-group-item">' + msg + '</li>');
+                var aTag = App.getEtherscanAnchorTag('address', event.args._buyer);
+                var msg = aTag + ' ---> bought <span style="padding: 3px; background-color: yellow; font-size: 14px"><b>' + event.args._name + '</b></span>';
+                $('#events').append('<li class="list-group-item">' + msg + '</li>');
 
                 // Reload all items
                 App.reloadItems();

@@ -4,6 +4,7 @@ App = {
     contracts: {},
     account: null,
     loading: false,
+    warned: false,
 
     init: function() {
         App.initWeb3();
@@ -35,7 +36,7 @@ App = {
         web3.version.getNode(function(err, node) {
 
             if (err) {
-                alert("Unable to detect ethereum network");
+                alert("Unable to detect any network");
             }
 
             $('#node').html(node);
@@ -76,16 +77,20 @@ App = {
 
         // Get account info
         web3.eth.getCoinbase(function(err, account) {
-            if (err == null) {
-                App.account = account;
-                $('#account').html(App.getEtherscanAnchorTag('address', account));
-                web3.eth.getBalance(account, function(err, balance) {
-                    if (err == null) {
-                        accountBalanceInEther = web3.fromWei(balance, "ether");
-                        $('#accountBalance').text(accountBalanceInEther + " ETH");
-                    }
-                });
+
+            if ((err || !account) && !App.warned) {
+                App.warned = true;
+                alert("Unable to fetch account info. Please ensure accounts are unlocked.");
             }
+
+            App.account = account;
+            $('#account').html(App.getEtherscanAnchorTag('address', account));
+            web3.eth.getBalance(account, function(err, balance) {
+                if (err == null) {
+                    accountBalanceInEther = web3.fromWei(balance, "ether");
+                    $('#accountBalance').text(accountBalanceInEther + " ETH");
+                }
+            });
         });
     },
 
@@ -156,28 +161,30 @@ App = {
     // Render the given item on UI
     displayItem: function(id, seller, buyer, name, desc, price, status) {
 
+        var itemsRow = $('#itemsRow');
         var itemTemplate = $('#itemTemplate');
         var priceInEth = web3.fromWei(price.toNumber(), "ether");
 
         // hide buy button if the app.account is the seller of if already sold
         if (seller == App.account || status == 'Sold') {
-            itemTemplate.find('.btn-buy').hide();
+            itemTemplate.find('.btn-buy').prop("disabled", true);
+        } else {
+            itemTemplate.find('.btn-buy').prop("disabled", false);
         }
 
         // Update the buy button with the id & the price
         // This avoids calling getItemDetails() again to fetch the item price when one wants to buy
         itemTemplate.find('.btn-buy').attr('data-id', id);
-        itemTemplate.find('.btn-buy').attr('data-value', price);
+        itemTemplate.find('.btn-buy').attr('data-value', priceInEth);
 
-        // etherscan.io/address/0x2944e7a6e74cd70ba15bffbb070c1fcb8046807c
         itemTemplate.find('.panel-title').text(name);
-        itemTemplate.find('.item-description').text(desc);
+        itemTemplate.find('.item-desc').text(desc);
         itemTemplate.find('.item-price').text(priceInEth);
         itemTemplate.find('.item-status').text(status);
         itemTemplate.find('.item-seller').html(App.getEtherscanAnchorTag('address', seller));
         itemTemplate.find('.item-buyer').html(App.getEtherscanAnchorTag('address', buyer));
-
         itemsRow.append(itemTemplate.html());
+
     },
 
     // Load all items from the contract

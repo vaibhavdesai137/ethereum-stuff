@@ -50,8 +50,37 @@ web3.fromWei(web3.eth.getBalance('0xc3edc1ede9f73cea8c01a07e9050035626ea2bad'), 
 # Now that we have two networks configured in truffle.js, we'll have to specify which network we want the contract to be deployed to
 # Whichever network we select, make sure geth is running connected to that network
 
-truffle migrate --network rinkeby
+# Without enough ethers in account, deploying will fail:
+# truffle migrate --network rinkeby
 # Error encountered, bailing. Network state unknown. Review successful transactions manually.
 # Error: insufficient funds for gas * price + value
 
-To be continued...
+truffle migrate --network rinkeby
+# Using network 'rinkeby'.
+# Running migration: 1_initial_migration.js
+#   Deploying Migrations...
+#   Migrations: 0x105e74b546de5a9d162ed749f9e5eb7e3df75afc
+# Saving successful migration to network...
+# Saving artifacts...
+# Running migration: 2_deploy_contracts.js
+#   Deploying Craigslist...
+#   Craigslist: 0xdef7668b3e8552a49c40e37d55f7868047a602d3
+# Saving successful migration to network...
+# Saving artifacts...
+
+# And since rinkeby is public, the contract addresses can be validated
+# Migrations: https://rinkeby.etherscan.io/address/0x105e74b546de5a9d162ed749f9e5eb7e3df75afc
+# Craigslist: https://rinkeby.etherscan.io/address/0xdef7668b3e8552a49c40e37d55f7868047a602d3
+
+# Now that contract is deployed:
+# Verify build/contracts/Migrations.json now shows details for rinkeby
+# Verify build/contracts/Craigslist.json now shows details for rinkeby
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# Check balances again to verify 1st account lost some ethers for deploying contract
+web3.fromWei(web3.eth.getBalance('0xce1f115599c3ab2bc6c118da8b167728f1e64217'), "ether"); ---> 9.0849103
+web3.fromWei(web3.eth.getBalance('0x6abd9270bac4a7ab672907e83b319a9041800a3d'), "ether"); ---> 5
+web3.fromWei(web3.eth.getBalance('0xc3edc1ede9f73cea8c01a07e9050035626ea2bad'), "ether"); ---> 5
+
+------------------------------------------------------------------------------------------------------------------------------

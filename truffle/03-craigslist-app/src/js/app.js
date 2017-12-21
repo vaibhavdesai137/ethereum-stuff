@@ -1,3 +1,9 @@
+$(function() {
+    $(window).load(function() {
+        App.init();
+    });
+});
+
 App = {
 
     web3Provider: null,
@@ -5,6 +11,7 @@ App = {
     account: null,
     loading: false,
     warned: false,
+    networkName: 'Mainnet',
     etherscanEndpoint: 'https://etherscan.io',
 
     init: function() {
@@ -45,35 +52,28 @@ App = {
 
         web3.version.getNetwork(function(err, netId) {
 
-            var networkName;
-
             switch (netId) {
                 case "1":
-                    networkName = 'Mainnet';
-                    App.etherscanEndpoint = 'https://etherscan.io';
+                    App.networkName = 'Mainnet';
                     break;
                 case "2":
-                    networkName = 'Morden Test Network (Deprecated)';
-                    App.etherscanEndpoint = 'https://etherscan.io';
+                    App.networkName = 'Morden Test Network (Deprecated)';
                     break;
                 case "3":
-                    networkName = 'Ropsten Test Network';
-                    App.etherscanEndpoint = 'https://ropsten.etherscan.io';
+                    App.networkName = 'Ropsten Test Network';
                     break;
                 case "4":
-                    networkName = 'Rinkeby Test Network';
-                    App.etherscanEndpoint = 'https://rinkeby.etherscan.io';
+                    App.networkName = 'Rinkeby Test Network';
                     break;
                 case "42":
-                    networkName = 'Kovan Test Network';
-                    App.etherscanEndpoint = 'https://kovan.etherscan.io';
+                    App.networkName = 'Kovan Test Network';
                     break;
                 default:
-                    networkName = netId;
+                    App.networkName = netId;
                     console.log('This is an unknown network for netId: ' + netId);
             }
 
-            $('#network').html(networkName);
+            $('#network').html(App.networkName);
         });
     },
 
@@ -324,7 +324,35 @@ App = {
     // Helper method to generate etherscan url tag
     getEtherscanAnchorTag: function(type, value) {
 
-        var url = App.etherscanEndpoint;
+        var etherscanEndpoint = 'https://etherscan.io';
+
+        switch (App.networkName) {
+
+            case "1":
+                // mainnet
+                etherscanEndpoint = 'https://etherscan.io';
+                break;
+            case "2":
+                // morden testnet
+                etherscanEndpoint = 'https://etherscan.io';
+                break;
+            case "3":
+                // ropsten testnet
+                etherscanEndpoint = 'https://ropsten.etherscan.io';
+                break;
+            case "4":
+                // rinkeby testnet
+                etherscanEndpoint = 'https://rinkeby.etherscan.io';
+                break;
+            case "42":
+                // kovan testnet
+                etherscanEndpoint = 'https://kovan.etherscan.io';
+                break;
+            default:
+                // running in local
+                App.networkName = netId;
+                console.log('This is an unknown network for netId: ' + netId);
+        }
 
         switch (type) {
             case 'transaction':
@@ -339,9 +367,3 @@ App = {
         return aTag;
     }
 };
-
-$(function() {
-    $(window).load(function() {
-        App.init();
-    });
-});

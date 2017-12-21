@@ -350,8 +350,7 @@ App = {
                 break;
             default:
                 // running in local
-                App.networkName = netId;
-                console.log('This is an unknown network for netId: ' + netId);
+                etherscanEndpoint = 'https://etherscan.io';
         }
 
         switch (type) {

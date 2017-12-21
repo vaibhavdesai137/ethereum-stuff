@@ -10,3 +10,8 @@
 # This will upload all necessary files
 
 ------------------------------------------------------------------------------------------------------------------------------
+
+# Once UI is uploaded to github pages, we need some ETH for rinkeby network
+# Follow process https://www.rinkeby.io/#faucet to get some ether for testing
+
+------------------------------------------------------------------------------------------------------------------------------

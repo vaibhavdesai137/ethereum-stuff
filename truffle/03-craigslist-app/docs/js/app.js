@@ -75,7 +75,7 @@ App = {
 
                 // Update account info once we know what network we are on
                 $('#network').html(App.networkName);
-                return App.getAccountInfo();
+                App.getAccountInfo();
             }
         });
     },

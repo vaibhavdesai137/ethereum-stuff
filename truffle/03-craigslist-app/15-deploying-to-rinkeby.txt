@@ -76,11 +76,17 @@ truffle migrate --network rinkeby
 # Verify build/contracts/Migrations.json now shows details for rinkeby
 # Verify build/contracts/Craigslist.json now shows details for rinkeby
 
+# Deploy the changes to frontend since Craigslist.json now has metadata for rinkeky.
+# ./deploy-frontend.sh
+
 ------------------------------------------------------------------------------------------------------------------------------
 
 # Check balances again to verify 1st account lost some ethers for deploying contract
 web3.fromWei(web3.eth.getBalance('0xce1f115599c3ab2bc6c118da8b167728f1e64217'), "ether"); ---> 9.0849103
 web3.fromWei(web3.eth.getBalance('0x6abd9270bac4a7ab672907e83b319a9041800a3d'), "ether"); ---> 5
 web3.fromWei(web3.eth.getBalance('0xc3edc1ede9f73cea8c01a07e9050035626ea2bad'), "ether"); ---> 5
+
+------------------------------------------------------------------------------------------------------------------------------
+
 
 ------------------------------------------------------------------------------------------------------------------------------

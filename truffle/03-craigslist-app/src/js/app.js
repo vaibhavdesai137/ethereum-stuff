@@ -35,7 +35,6 @@ App = {
         }
 
         App.getNetworkInfo();
-        App.getAccountInfo();
         return App.initContract();
     },
 
@@ -74,9 +73,11 @@ App = {
                 default:
                     App.networkName = netId;
                     console.log('This is an unknown network for netId: ' + netId);
-            }
 
-            $('#network').html(App.networkName);
+                // Update account info once we know what network we are on
+                $('#network').html(App.networkName);
+                App.getAccountInfo();
+            }
         });
     },
 

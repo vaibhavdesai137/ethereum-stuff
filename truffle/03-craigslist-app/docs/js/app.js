@@ -11,8 +11,9 @@ App = {
     account: null,
     loading: false,
     warned: false,
-    networkName: 'Mainnet',
-    etherscanEndpoint: 'https://etherscan.io',
+    networkId,
+    networkName,
+    etherscanEndpoint,
 
     init: function() {
         App.initWeb3();
@@ -52,7 +53,9 @@ App = {
 
         web3.version.getNetwork(function(err, netId) {
 
-            switch (netId) {
+            App.networkId = netId;
+
+            switch (App.networkId) {
                 case "1":
                     App.networkName = 'Mainnet';
                     break;
@@ -324,42 +327,41 @@ App = {
     // Helper method to generate etherscan url tag
     getEtherscanAnchorTag: function(type, value) {
 
-        var etherscanEndpoint = 'https://etherscan.io';
         var url;
 
-        switch (App.networkName) {
+        switch (App.networkId) {
 
             case "1":
                 // mainnet
-                etherscanEndpoint = 'https://etherscan.io';
+                url = 'https://etherscan.io';
                 break;
             case "2":
                 // morden testnet
-                etherscanEndpoint = 'https://etherscan.io';
+                url = 'https://morden.etherscan.io';
                 break;
             case "3":
                 // ropsten testnet
-                etherscanEndpoint = 'https://ropsten.etherscan.io';
+                url = 'https://ropsten.etherscan.io';
                 break;
             case "4":
                 // rinkeby testnet
-                etherscanEndpoint = 'https://rinkeby.etherscan.io';
+                url = 'https://rinkeby.etherscan.io';
                 break;
             case "42":
                 // kovan testnet
-                etherscanEndpoint = 'https://kovan.etherscan.io';
+                url = 'https://kovan.etherscan.io';
                 break;
             default:
                 // running in local
-                etherscanEndpoint = 'https://etherscan.io';
+                url = 'https://etherscan.io';
         }
 
         switch (type) {
             case 'transaction':
-                url += etherscanEndpoint + '/tx/' + value;
+                url += '/tx/' + value;
                 break;
             case 'address':
-                url += etherscanEndpoint + '/address/' + value;
+                url += '/address/' + value;
                 break;
         }
 

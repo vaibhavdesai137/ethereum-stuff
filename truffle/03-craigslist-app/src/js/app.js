@@ -28,19 +28,19 @@ App = {
         // Could be testrpc or any provider
         if (typeof web3 !== 'undefined') {
             App.web3Provider = web3.currentProvider;
+            web3 = new Web3(web3.currentProvider);
         } else {
             App.web3Provider = new Web3.providers.HttpProvider('http://localhost:8545');
+            web3 = new Web3(App.web3Provider);
         }
 
-        web3 = new Web3(App.web3Provider);
-
-        App.displayNetworkInfo();
-        App.displayAccountInfo();
+        App.getNetworkInfo();
+        App.getAccountInfo();
         return App.initContract();
     },
 
     // Get network
-    displayNetworkInfo: function() {
+    getNetworkInfo: function() {
 
         web3.version.getNode(function(err, node) {
 
@@ -82,7 +82,7 @@ App = {
 
     // Get the coinbase account and its balance to render on the UI
     // web3 does not have promises thats why using callbacks
-    displayAccountInfo: function() {
+    getAccountInfo: function() {
 
         // Get account info
         web3.eth.getCoinbase(function(err, account) {
@@ -139,7 +139,7 @@ App = {
         App.loading = true;
 
         // Balance may have changed
-        App.displayAccountInfo();
+        App.getAccountInfo();
 
         // truffle uses promises
         // same can be done using callbacks too

@@ -325,6 +325,7 @@ App = {
     getEtherscanAnchorTag: function(type, value) {
 
         var etherscanEndpoint = 'https://etherscan.io';
+        var url;
 
         switch (App.networkName) {
 
@@ -355,10 +356,10 @@ App = {
 
         switch (type) {
             case 'transaction':
-                url += '/tx/' + value;
+                url += etherscanEndpoint + '/tx/' + value;
                 break;
             case 'address':
-                url += '/address/' + value;
+                url += etherscanEndpoint + '/address/' + value;
                 break;
         }
 

@@ -11,9 +11,9 @@ App = {
     account: null,
     loading: false,
     warned: false,
-    networkId,
-    networkName,
-    etherscanEndpoint,
+    networkId: '',
+    networkName: '',
+    etherscanEndpoint: '',
 
     init: function() {
         App.initWeb3();

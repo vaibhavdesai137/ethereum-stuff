@@ -5,7 +5,7 @@ App = {
     account: null,
     loading: false,
     warned: false,
-    etherscanEndpoint,
+    etherscanEndpoint: '',
 
     init: function() {
         App.initWeb3();

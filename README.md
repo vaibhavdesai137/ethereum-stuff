@@ -9,15 +9,19 @@ ETH stuff (solidity, web3, truffle, private blockchain, testnet, etc.)
 - Mist
 - MetaMask
 - Working with testrpc
-- Block details:
+- Blockchain in-depth:
     - block inspection
     - transaction inspection
-    - gas
+    - gas, gas price, gas limit
     - opcodes
-- Solidity
-- Web3
-- Truffle
+- Smart Contracts
+    - Basics
+    - Solidity and geth
+    - Solidity and Web3
+    - Solidity and Truffle
+
 - Setting up rinkeby blockchain
 - Mining with rinkeby
 - Deploying smart contracts to rinkeby
+
 - Deploying smart contracts to mainnet

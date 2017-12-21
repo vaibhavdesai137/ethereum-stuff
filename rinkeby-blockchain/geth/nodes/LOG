@@ -133,3 +133,25 @@
 =============== Dec 21, 2017 (PST) ===============
 00:01:55.965720 db@close closing
 00:01:55.966763 db@close done T·1.04066ms
+=============== Dec 21, 2017 (PST) ===============
+00:30:13.052601 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+00:30:13.054509 version@stat F·[0 3] S·4MiB[0B 4MiB] Sc·[0.00 0.05]
+00:30:13.054578 db@open opening
+00:30:13.054721 journal@recovery F·1
+00:30:13.055404 journal@recovery recovering @33
+00:30:13.176065 memdb@flush created L0@38 N·40528 S·1MiB "n:\x00..ing,v311567":"n:\xff..ail,v293067"
+00:30:13.178392 version@stat F·[1 3] S·6MiB[1MiB 4MiB] Sc·[0.25 0.05]
+00:30:13.179776 db@janitor F·6 G·0
+00:30:13.179807 db@open done T·125.218838ms
+00:30:13.193478 table@compaction L0·1 -> L1·3 S·6MiB Q·326578
+00:30:13.242169 table@build created L1@41 N·33031 S·2MiB "n:\x00..ing,v179474":"n:b..ver,v265248"
+00:30:13.285650 table@build created L1@42 N·33170 S·2MiB "n:b..ail,v325925":"n:\xc5..ver,v78967"
+00:30:13.305821 table@build created L1@43 N·19897 S·1MiB "n:\xc5..ail,v142298":"version,v1"
+00:30:13.305930 version@stat F·[0 3] S·5MiB[0B 5MiB] Sc·[0.00 0.05]
+00:30:13.306091 table@compaction committed F-1 S-876KiB Ke·0 D·34130 T·112.571241ms
+00:30:13.306339 table@remove removed @38
+00:30:13.306552 table@remove removed @35
+00:30:13.306735 table@remove removed @36
+00:30:13.306888 table@remove removed @37
+00:33:40.679457 db@close closing
+00:33:40.680336 db@close done T·876.721µs

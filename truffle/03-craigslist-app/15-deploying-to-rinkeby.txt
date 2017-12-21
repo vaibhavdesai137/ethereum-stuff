@@ -47,3 +47,11 @@ web3.fromWei(web3.eth.getBalance('0xc3edc1ede9f73cea8c01a07e9050035626ea2bad'), 
 ------------------------------------------------------------------------------------------------------------------------------
 
 # Ok so now that we have 0.45 ETH in 1st account, we can atleast deploy the contract
+# Now that we have two networks configured in truffle.js, we'll have to specify which network we want the contract to be deployed to
+# Whichever network we select, make sure geth is running connected to that network
+
+truffle migrate --network rinkeby
+# Error encountered, bailing. Network state unknown. Review successful transactions manually.
+# Error: insufficient funds for gas * price + value
+
+To be continued...

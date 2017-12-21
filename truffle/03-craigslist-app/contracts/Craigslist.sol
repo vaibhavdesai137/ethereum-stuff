@@ -1,6 +1,11 @@
 pragma solidity ^0.4.11;
 
-contract Craigslist {
+// Can be implemented by simply using a "owner" variable here
+// But using inheritance just for deonstration pruposes :)
+import "./Owned.sol";
+
+// Craigslist extends owned
+contract Craigslist is Owned {
 
 	// custom types
 	// syntactic sugar, evm does not understand structs
@@ -14,7 +19,7 @@ contract Craigslist {
 		string status;
 	}
 	
-	// all items
+	// map that stores (itemId -> Item)
 	// we need an explicit counter since there is no iteration allowed on mappings
 	// also it helps to check which item ids are invalid
 	// for example: if 10 items, counter will be 10
@@ -27,6 +32,16 @@ contract Craigslist {
 	// "indexed" <--- allows to search/filer
 	event itemListedEvent(uint indexed _id, address indexed _seller, string _name, uint256 _price, string _status);
 	event itemBoughtEvent(uint indexed _id, address indexed _seller, address indexed _buyer, string _name, uint256 _price, string _status);
+
+	// modifiers
+	modifier onlyOwner() {
+		
+		// anyone other than owner will be rejected
+		require(msg.sender == owner);
+
+		// Continue if all above validations pass
+		_;
+	}
 
 	// sell the item, will result in a txn
 	function listItem(string _name, string _desc, uint256 _price) public {
@@ -117,6 +132,13 @@ contract Craigslist {
 		}
 
 		return (forSaleItemIds);
+	}
+
+	// deactivate the contract
+	// only contract owner can deactivate
+	function kill() onlyOwner {
+		// all remaining funds owned by this contract will be transferred to the "owner"
+		selfdestruct(owner);
 	}
 	
 }

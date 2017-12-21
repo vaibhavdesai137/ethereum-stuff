@@ -1,0 +1,150 @@
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# Remember, smart contract code goes on the blockchain so once deployed, it cannot be changed
+# The address the contract is at remains the same forever
+# Contract state can change but not the address
+# If you redeploy the contract, its a new instance with a new address but the older contract is still out there
+
+# THIS IS WHY ITS VERY VERY IMPORTANT TO TEST THE CONTRACT
+# ONCE ON MAINNET, THERE IS NO SECOND CHANCE
+
+# Deactivating a contract is needed for many reasons:
+#   - When campaigning ends, the contract is no longer needed (eg: ICOs, etc.)
+#   - POC is complete so a real contract is now at a new address
+#   - The business workflows have changed so older contract is no longer valid
+#   - Bug in the code so needs a fix and needs to be redeployed
+#   - Or a simple upgrade to the contract
+
+# Responsibilities before deploying new contract:
+#   - Migrate states of existing contract
+#   - Inform the users
+#   - Deactivate the old contract
+
+# DEACTIVATING DOES THE FOLLOWING:
+#   - All existing contract states are cleared (since this saves space on evm, we get some gas back when destroying a contract)
+#   - No new txns are processed but gas will still be used for initiating the txns
+#   - Any function that accepts ether, the sender will lose the money and it won't be accessible by anyone anymore
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# When deactivating, all remaining funds owned by this contract will be transferred to the address passed as input
+# selfdestruct(address)
+# Please ensure only contract owner can destroy the contract
+# Best practice for this is to use a state variable called "owner"
+# Set the value in constructor as "owner = msg.send"
+# And only allow the owner to destroy with "require(msg.sender == owner)" in the kill function
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# Update the contract to add the kill function
+# Start testrpc
+# Run truffle migrate
+# Start truffle console
+
+# We know truffle uses the 1st account to deploy the contract
+truffle(development)> web3.eth.accounts
+[ '0x00d1ae0a6fc13b9ecdefa118b94cf95ac16d4ab0',
+  '0x1daa654cfbc28f375e0f08f329de219fff50c765',
+  '0xc2dbc0a6b68d6148d80273ce4d6667477dbf2aa7' ]
+
+# Get contract instance
+truffle(development)> Craigslist.deployed().then(function(instance){app=instance;});
+
+# List an item to change contract state
+truffle(development)> app.listItem("foo", "bar", 12, {from: web3.eth.accounts[2]});
+{ tx: '0xacd0ecd916e14c7e25b10b2dc5945926496e483f6da82d8f820fff57ff5bc59d',
+    ...
+    ... }
+
+# Get the id for items on sale
+# As expected, we see one item with id 1
+truffle(development)> app.getItemsOnSale.call();
+[ { [String: '1'] s: 1, e: 0, c: [ 1 ] } ]
+
+# Try killing it with a different address other than owner
+truffle(development)> app.kill({from: web3.eth.accounts[2]});
+# Error: VM Exception while processing transaction: revert
+#     at Object.InvalidResponse (/Users/vaidesai/.nvm/versions/node/v6.11.3/lib/node_modules/truffle/build/cli.bundled.js:37047:16)
+#     ...
+#     ...
+#     at endReadableNT (_stream_readable.js:974:12)
+
+# As expected, we get an error
+# Try the same with contract owner
+truffle(development)> app.kill({from: web3.eth.accounts[0]});
+{ tx: '0xcf8719bb185ac866094e76dec80a2b81fd1680965e8099aed53d131e08aed028',
+  ...
+  ... }
+
+# Try querying again for items on sale
+# We get an empty array back because all states are cleared
+# Please note that the contract is still out there
+truffle(development)> app.getItemsOnSale.call();
+[]
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# Now that contract is destroyed, try listing another item
+# Get seller balance before listing
+truffle(development)> web3.fromWei(web3.eth.getBalance(web3.eth.accounts[1]), "ether").toNumber();
+87.99863508
+
+# The txn will be created but will not be successful since the contract will NOT allow any state changes
+truffle(development)> app.listItem("foo", "bar", 12, {from: web3.eth.accounts[1]});
+{ tx: '0xacd0ecd916e14c7e25b10b2dc5945926496e483f6da82d8f820fff57ff5bc59d',
+  ...
+  ... }
+
+# Verify no items show up for sale
+truffle(development)> app.getItemsOnSale.call();
+[]
+
+# Gas was still consumed for initiating the listItem txn
+# Balance went from 87.99863508 ---> 87.99634788
+truffle(development)> web3.fromWei(web3.eth.getBalance(web3.eth.accounts[1]), "ether").toNumber();
+87.99634788
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# Try buying an item
+# Get buyer balance before listing
+truffle(development)> web3.fromWei(web3.eth.getBalance(web3.eth.accounts[2]), "ether").toNumber();
+99.9779896
+
+# The txn will be created but will not be successful since the contract will NOT allow any state changes
+truffle(development)>  app.buyItem(1, {from: web3.eth.accounts[2], value: web3.toWei(20, "ether")});
+{ tx: '0xd11ba2fc5009521c3ea8b9d74d45e9a62bb43f2f67543979b0dad966d4077dea',
+  ...
+  ... }
+
+# Balance went from 99.9779896 ---> 79.9758432
+truffle(development)> web3.fromWei(web3.eth.getBalance(web3.eth.accounts[1]), "ether").toNumber();
+79.9758432
+
+# BUYER LOST THE FOLLOWING:
+#   - GAS MONEY FOR INITIATING THE TXN
+#   - 20 ETH PAID FOR BUYING THE ITEM
+
+# 20 ETH ARE NOW IN CONTRACT's ADDRESS
+# NO WAY TO INITIATE A TXN FROM CONTRACT's ADDRESS 
+# THAT 20 ETHs ARE NOW GONE FOR GOOD
+
+# Get the contract address
+truffle(development)> app.address
+'0x3869a50afd13b486ce0f6a2070e5e75bf26f76cd'
+
+# Get the contract balance
+truffle(development)> web3.fromWei(web3.eth.getBalance('0x3869a50afd13b486ce0f6a2070e5e75bf26f76cd'), "ether").toNumber();
+20
+
+# Try initiating a transfer from contract address to someone else
+truffle(development)> web3.eth.sendTransaction({from: '0x3869a50afd13b486ce0f6a2070e5e75bf26f76cd', to: web3.eth.accounts[0], value: web3.toWei(20, "ether")});
+Error: Error: could not unlock signer account
+    ...
+    ...
+    at REPLServer.<anonymous> (repl.js:538:10)
+
+------------------------------------------------------------------------------------------------------------------------------
+
+

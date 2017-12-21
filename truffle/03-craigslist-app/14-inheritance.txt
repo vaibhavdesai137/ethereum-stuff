@@ -1,0 +1,13 @@
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# Inheritance in solidity is like other languages
+# Helps reuse code and extend code
+# Multiple inheritance is supported
+# Abstract contracts supported
+# Interface contracts supported
+
+# EVM has no notion of Inheritance/Interface/Abstract constracts
+# During compile time, all the contracts are merged together and deployed as one
+
+------------------------------------------------------------------------------------------------------------------------------

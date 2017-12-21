@@ -261,14 +261,15 @@ App = {
                 toBlock: 'latest'
             }).watch(function(err, event) {
 
-                // Update UI to show the new event
-                var aTag = App.getEtherscanAnchorTag('address', event.args._seller);
-                var msg = aTag + ' ---> listed <span style="padding: 3px; background-color: yellow; font-size: 14px"><b>' + event.args._name + '</b></span> for sale';
-                $('#events').append('<li class="list-group-item">' + msg + '</li>');
+                if (err) {
+                    console.log(err);
+                } else {
+                    var aTag = App.getEtherscanAnchorTag('address', event.args._seller);
+                    var msg = aTag + ' ---> listed <span style="padding: 3px; background-color: yellow; font-size: 14px"><b>' + event.args._name + '</b></span> for sale';
+                    $('#events').append('<li class="list-group-item">' + msg + '</li>');
+                }
 
-                // Reload all items
                 App.reloadItems();
-
             });
 
             // Attach listener for buyItem event
@@ -277,14 +278,15 @@ App = {
                 toBlock: 'latest'
             }).watch(function(err, event) {
 
-                // Update UI to show the new event
-                var aTag = App.getEtherscanAnchorTag('address', event.args._buyer);
-                var msg = aTag + ' ---> bought <span style="padding: 3px; background-color: yellow; font-size: 14px"><b>' + event.args._name + '</b></span>';
-                $('#events').append('<li class="list-group-item">' + msg + '</li>');
+                if (err) {
+                    console.log(err);
+                } else {
+                    var aTag = App.getEtherscanAnchorTag('address', event.args._buyer);
+                    var msg = aTag + ' ---> bought <span style="padding: 3px; background-color: yellow; font-size: 14px"><b>' + event.args._name + '</b></span>';
+                    $('#events').append('<li class="list-group-item">' + msg + '</li>');
+                }
 
-                // Reload all items
                 App.reloadItems();
-
             });
         });
 

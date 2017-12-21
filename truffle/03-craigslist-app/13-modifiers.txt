@@ -1,0 +1,8 @@
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# Instead of using require(...) everywhere, we can make generic helpers that do validation
+# These are called modifiers in solidity
+# Helps in keeping functions clean and re-using such validation helpers
+
+------------------------------------------------------------------------------------------------------------------------------

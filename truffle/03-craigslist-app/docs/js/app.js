@@ -35,7 +35,6 @@ App = {
         }
 
         App.getNetworkInfo();
-        return App.initContract();
     },
 
     // Get network
@@ -76,7 +75,7 @@ App = {
 
                 // Update account info once we know what network we are on
                 $('#network').html(App.networkName);
-                App.getAccountInfo();
+                return App.getAccountInfo();
             }
         });
     },
@@ -101,6 +100,8 @@ App = {
                     $('#accountBalance').text(accountBalanceInEther + " ETH");
                 }
             });
+
+            return App.initContract();
         });
     },
 

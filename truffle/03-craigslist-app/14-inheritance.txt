@@ -10,4 +10,8 @@
 # EVM has no notion of Inheritance/Interface/Abstract constracts
 # During compile time, all the contracts are merged together and deployed as one
 
+# In our case, do not add "Owned.sol" as a deployed contract in migrations/2_deploy_contracts.js
+# We don't want "Owned" to be available as a standlone contract
+# When we run truffle migrate, truffle will merge the two correctly and create just one Craigslist.json file
+
 ------------------------------------------------------------------------------------------------------------------------------

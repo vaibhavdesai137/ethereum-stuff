@@ -1,4 +1,12 @@
 
 ------------------------------------------------------------------------------------------------------------------------------
 
+# You can deploy the front end wherever you like
+# For our app, since we inetract with blockchain via metamask, we simply need a way to load our frontend
+# We'll use github pages for that
+
+# Create docs/ directory at the same level as src/ directory
+# Invoke the script docs/deploy-frontend.sh
+# This will upload all necessary files
+
 ------------------------------------------------------------------------------------------------------------------------------

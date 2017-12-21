@@ -848,8 +848,84 @@
       "links": {},
       "address": "0xfb0a4e5bbc481ae30826742c325ac26442cf0253",
       "updated_at": 1513814116367
+    },
+    "1513843596368": {
+      "events": {
+        "0x511ec0ca35e7c9b3a5ec204efd5767c72ba335a3d609eb2fa33139d8d28aadae": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "_id",
+              "type": "uint256"
+            },
+            {
+              "indexed": true,
+              "name": "_seller",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "_name",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "name": "_price",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "_status",
+              "type": "string"
+            }
+          ],
+          "name": "itemListedEvent",
+          "type": "event"
+        },
+        "0xe5e46773d81d19e2444c6443c550996165dba106bdfed9533901fa6e8e7ae849": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "_id",
+              "type": "uint256"
+            },
+            {
+              "indexed": true,
+              "name": "_seller",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "_buyer",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "_name",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "name": "_price",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "_status",
+              "type": "string"
+            }
+          ],
+          "name": "itemBoughtEvent",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0xfb0a4e5bbc481ae30826742c325ac26442cf0253",
+      "updated_at": 1513843617568
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1513814116367
+  "updated_at": 1513843617568
 }

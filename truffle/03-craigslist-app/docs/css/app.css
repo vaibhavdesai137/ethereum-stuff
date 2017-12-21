@@ -4,9 +4,7 @@ body {
 }
 
 .welcome {
-    font-weight: bold;
     font-size: 14px;
-    display: inline;
     padding: 5px;
 }
 
@@ -14,4 +12,17 @@ body {
     width: 1200px;
     margin-left: auto;
     margin-right: auto;
+}
+
+.navbar {
+    color: #FFF;
+}
+
+a.src-code-link {
+    color: #FFF;
+}
+
+a.src-code-link:hover,
+a.src-code-link:focus {
+    background-color: #11bb11;
 }

@@ -5,7 +5,7 @@ App = {
     account: null,
     loading: false,
     warned: false,
-    etherscanEndpoint: '',
+    etherscanEndpoint: 'https://etherscan.io',
 
     init: function() {
         App.initWeb3();
@@ -70,7 +70,6 @@ App = {
                     break;
                 default:
                     networkName = netId;
-                    etherscanEndpoint = '';
                     console.log('This is an unknown network for netId: ' + netId);
             }
 

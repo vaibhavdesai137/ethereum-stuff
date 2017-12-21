@@ -50,23 +50,23 @@ App = {
             switch (netId) {
                 case "1":
                     networkName = 'Mainnet';
-                    etherscanEndpoint = 'https://etherscan.io';
+                    App.etherscanEndpoint = 'https://etherscan.io';
                     break;
                 case "2":
                     networkName = 'Morden Test Network (Deprecated)';
-                    etherscanEndpoint = 'https://etherscan.io';
+                    App.etherscanEndpoint = 'https://etherscan.io';
                     break;
                 case "3":
                     networkName = 'Ropsten Test Network';
-                    etherscanEndpoint = 'https://ropsten.etherscan.io';
+                    App.etherscanEndpoint = 'https://ropsten.etherscan.io';
                     break;
                 case "4":
                     networkName = 'Rinkeby Test Network';
-                    etherscanEndpoint = 'https://rinkeby.etherscan.io';
+                    App.etherscanEndpoint = 'https://rinkeby.etherscan.io';
                     break;
                 case "42":
                     networkName = 'Kovan Test Network';
-                    etherscanEndpoint = 'https://kovan.etherscan.io';
+                    App.etherscanEndpoint = 'https://kovan.etherscan.io';
                     break;
                 default:
                     networkName = netId;

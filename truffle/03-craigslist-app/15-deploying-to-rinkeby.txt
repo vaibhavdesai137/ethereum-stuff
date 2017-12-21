@@ -35,14 +35,14 @@
 > personal.unlockAccount(eth.accounts[1]);
 > personal.unlockAccount(eth.accounts[2]);
 
-# Get the balances
-# I transferred some ETH to the 1st account from outside
+# Our new accounts on rinkeby would have 0 ETH
+# You can either get funds from faucet: https://faucet.rinkeby.io/
+# Or beg someone to send you some
+
+# After begging some ETH from the web, this is what we have now
 web3.fromWei(web3.eth.getBalance('0xce1f115599c3ab2bc6c118da8b167728f1e64217'), "ether"); ---> 0.45
 web3.fromWei(web3.eth.getBalance('0x6abd9270bac4a7ab672907e83b319a9041800a3d'), "ether"); ---> 0
 web3.fromWei(web3.eth.getBalance('0xc3edc1ede9f73cea8c01a07e9050035626ea2bad'), "ether"); ---> 0
-
-# You can either get funds fmor faucet: https://faucet.rinkeby.io/
-# Or beg someone to send you some
 
 ------------------------------------------------------------------------------------------------------------------------------
 

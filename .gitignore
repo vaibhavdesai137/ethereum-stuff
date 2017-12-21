@@ -1,3 +1,6 @@
-geth/
-keystore/
+private-blockchain/geth/
+private-blockchain/keystore/
+rinkeby-blockchain/geth/
+rinkeby-blockchain/keystore/
 node_modules/
+

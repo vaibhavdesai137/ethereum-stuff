@@ -8,7 +8,7 @@
 ------------------------------------------------------------------------------------------------------------------------------
 
 # Attach to geth in a separate terminal
-# We can also do "geth --datadir=./chaindata console" to get the console while running geth in the same window
+# We can also do 'geth --datadir "./private-blockchain/" console' to get the console while running geth in the same window
 # But its too confuisng since eth logs keep getting printed there.
 # Make sure the datadir matches where you blockchain data is stored (you may be running multiple nodes)
 # Attaching directly to rpc port also works
@@ -31,11 +31,7 @@ at block: 467 (Wed, 13 Dec 2017 00:29:52 PST)
 # Check accounts
 # This should match the 3 accounts we created earlier
 > eth.accounts
-[
-	"0x4fdf533660f6dc6f99de1d72ac2851a1acf1bf0d", 
-	"0x0297074de7fbe97628a12950a273a3808ccaa5e2", 
-	"0x4138650371f74c8d4b763dc4410e6e786207b570"
-]
+["0x4fdf533660f6dc6f99de1d72ac2851a1acf1bf0d", "0x0297074de7fbe97628a12950a273a3808ccaa5e2", "0x4138650371f74c8d4b763dc4410e6e786207b570"]
 
 # Check if our mining rewards are going to 1st account as expected
 > eth.coinbase

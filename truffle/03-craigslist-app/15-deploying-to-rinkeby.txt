@@ -1,17 +1,49 @@
 
 ------------------------------------------------------------------------------------------------------------------------------
 
+# Make sure you have geth running and connected to rinkeby network
+# Follow steps mentioned in ../../15-setup-rinkeby-blockchain.txt
+# Come back here when local node is in sync with rinkeby network
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# Now that rinkey is all up to date on our node, we will proceed with contract deployment
+
 # You can deploy the front end wherever you like
-# For our app, since we inetract with blockchain via metamask, we simply need a way to load our frontend
+# For our app, since we interact with blockchain via metamask, we simply need a way to load our frontend
 # We'll use github pages for that
 
 # Create docs/ directory at the same level as src/ directory
-# Invoke the script docs/deploy-frontend.sh
-# This will upload all necessary files
+# Invoke the script ./deploy-frontend.sh
+# This will upload all necessary files to github
+
+# Hit the url: https://vaibhavdesai137.github.io/ethereum-stuff/truffle/03-craigslist-app/docs/
 
 ------------------------------------------------------------------------------------------------------------------------------
 
-# Once UI is uploaded to github pages, we need some ETH for rinkeby network
-# Follow process https://www.rinkeby.io/#faucet to get some ether for testing
+# Now that our front end is all up to date , we will proceed with contract deployment
+# Add a new network config in truffle.js
+# Now with testrpc, all acounts are unlocked by default
+# But for any other network, we'll have to explicitly unlock the account via geth
+# By default, truffle uses the 1st account from the list to deploy the contract
+# Lets unlock all 3 accounts anyway
+
+# We'll use the 1st account to deploy the contract
+> eth.accounts
+["0xce1f115599c3ab2bc6c118da8b167728f1e64217", "0x6abd9270bac4a7ab672907e83b319a9041800a3d", "0xc3edc1ede9f73cea8c01a07e9050035626ea2bad"]
+> personal.unlockAccount(eth.accounts[0]);
+> personal.unlockAccount(eth.accounts[1]);
+> personal.unlockAccount(eth.accounts[2]);
+
+# Get the balances
+# I transferred some ETH to the 1st account from outside
+web3.fromWei(web3.eth.getBalance('0xce1f115599c3ab2bc6c118da8b167728f1e64217'), "ether"); ---> 0.45
+web3.fromWei(web3.eth.getBalance('0x6abd9270bac4a7ab672907e83b319a9041800a3d'), "ether"); ---> 0
+web3.fromWei(web3.eth.getBalance('0xc3edc1ede9f73cea8c01a07e9050035626ea2bad'), "ether"); ---> 0
+
+# You can either get funds fmor faucet: https://faucet.rinkeby.io/
+# Or beg someone to send you some
 
 ------------------------------------------------------------------------------------------------------------------------------
+
+# Ok so now that we have 0.45 ETH in 1st account, we can atleast deploy the contract

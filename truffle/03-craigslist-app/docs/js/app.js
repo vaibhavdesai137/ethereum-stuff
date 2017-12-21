@@ -5,6 +5,7 @@ App = {
     account: null,
     loading: false,
     warned: false,
+    etherscanEndpoint,
 
     init: function() {
         App.initWeb3();
@@ -49,21 +50,27 @@ App = {
             switch (netId) {
                 case "1":
                     networkName = 'Mainnet';
+                    etherscanEndpoint = 'https://etherscan.io';
                     break;
                 case "2":
                     networkName = 'Morden Test Network (Deprecated)';
+                    etherscanEndpoint = 'https://etherscan.io';
                     break;
                 case "3":
                     networkName = 'Ropsten Test Network';
+                    etherscanEndpoint = 'https://ropsten.etherscan.io';
                     break;
                 case "4":
                     networkName = 'Rinkeby Test Network';
+                    etherscanEndpoint = 'https://rinkeby.etherscan.io';
                     break;
                 case "42":
                     networkName = 'Kovan Test Network';
+                    etherscanEndpoint = 'https://kovan.etherscan.io';
                     break;
                 default:
                     networkName = netId;
+                    etherscanEndpoint = '';
                     console.log('This is an unknown network for netId: ' + netId);
             }
 
@@ -146,7 +153,10 @@ App = {
 
             // Query details for each id and update the UI
             for (var i = 0; i < itemIds.length; i++) {
-                var itemId = itemIds[i];
+
+                // Weird bug in metamask that causes conversion error
+                // Explicitly convert since our contract is expecting a uint
+                var itemId = itemIds[i].toNumber();
                 contractInstance.items.call(itemId).then(function(item) {
                     App.displayItem(item[0], item[1], item[2], item[3], item[4], item[5], item[6]);
                 });
@@ -315,7 +325,7 @@ App = {
     // Helper method to generate etherscan url tag
     getEtherscanAnchorTag: function(type, value) {
 
-        var url = "https://etherscan.io";
+        var url = App.etherscanEndpoint;
 
         switch (type) {
             case 'transaction':

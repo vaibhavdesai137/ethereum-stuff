@@ -9,8 +9,8 @@ contract('Craigslist', function(accounts) {
     var name = "Some-Item";
     var desc = "Some-Item-Desc";
     var price = 1;
-    var statusAfterListing = "Available";
-    var statusAfterBuying = "Sold";
+    var statusAfterListing = "0";
+    var statusAfterBuying = "1";
 
     // Test case: cannot buy when nothing on sale
     // 1. Verify you cannot buy when no items listed yet
@@ -28,6 +28,9 @@ contract('Craigslist', function(accounts) {
             return contractInstance.getItemCount.call();
         }).then(function(data) {
             assert.equal(data.toNumber(), 0, 'item count should be 0');
+            return contractInstance.itemBoughtCount.call();
+        }).then(function(data) {
+            assert.equal(data, 0, 'items bought should be 0');
         });
     });
 
@@ -59,6 +62,9 @@ contract('Craigslist', function(accounts) {
             assert.equal(data[4], desc, 'item desc must be ' + desc);
             assert.equal(data[5].toNumber(), price, 'item price must be ' + price);
             assert.equal(data[6], statusAfterListing, 'item status must be ' + statusAfterListing);
+            return contractInstance.itemBoughtCount.call();
+        }).then(function(data) {
+            assert.equal(data, 0, 'items bought should be 0');
         });
     });
 
@@ -85,6 +91,9 @@ contract('Craigslist', function(accounts) {
             assert.equal(data[4], desc, 'item desc must be ' + desc);
             assert.equal(data[5].toNumber(), price, 'item price must be ' + price);
             assert.equal(data[6], statusAfterListing, 'item status must be ' + statusAfterListing);
+            return contractInstance.itemBoughtCount.call();
+        }).then(function(data) {
+            assert.equal(data, 0, 'items bought should be 0');
         });
     });
 
@@ -111,6 +120,9 @@ contract('Craigslist', function(accounts) {
             assert.equal(data[4], desc, 'item desc must be ' + desc);
             assert.equal(data[5].toNumber(), price, 'item price must be ' + price);
             assert.equal(data[6], statusAfterListing, 'item status must be ' + statusAfterListing);
+            return contractInstance.itemBoughtCount.call();
+        }).then(function(data) {
+            assert.equal(data, 0, 'items bought should be 0');
         });
     });
 
@@ -142,6 +154,9 @@ contract('Craigslist', function(accounts) {
             assert.equal(data[4], desc, 'item desc must be ' + desc);
             assert.equal(data[5].toNumber(), price, 'item price must be ' + price);
             assert.equal(data[6], statusAfterBuying, 'item status must be ' + statusAfterBuying);
+            return contractInstance.itemBoughtCount.call();
+        }).then(function(data) {
+            assert.equal(data, 1, 'items bought should be 1');
         });
     });
 

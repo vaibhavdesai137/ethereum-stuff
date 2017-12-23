@@ -14,8 +14,9 @@ contract('Craigslist', function(accounts) {
     var desc2 = "Bigass Smartphone";
     var price2 = 5;
 
-    var statusAfterListing = "Available";
-    var statusAfterBuying = "Sold";
+    // enums in solidity return uints and not the actual strings
+    var statusAfterListing = "0";
+    var statusAfterBuying = "1";
 
     var sellerBalanceBeforeBuy;
     var sellerBalanceAfterBuy;
@@ -32,6 +33,9 @@ contract('Craigslist', function(accounts) {
             return contractInstance.getItemsOnSale.call();
         }).then(function(data) {
             assert.equal(data.length, 0, 'items on sale should be 0');
+            return contractInstance.itemBoughtCount.call();
+        }).then(function(data) {
+            assert.equal(data, 0, 'items bought should be 0');
         });
     });
 
@@ -71,6 +75,9 @@ contract('Craigslist', function(accounts) {
             assert.equal(data[4], desc1, 'item desc should be ' + desc1);
             assert.equal(web3.fromWei(data[5].toNumber(), "ether"), price1, 'price should be ' + price1);
             assert.equal(data[6], statusAfterListing, 'item status should be ' + statusAfterListing);
+            return contractInstance.itemBoughtCount.call();
+        }).then(function(data) {
+            assert.equal(data, 0, 'items bought should be 0');
         });
     });
 
@@ -98,8 +105,8 @@ contract('Craigslist', function(accounts) {
             assert.equal(data, 2, 'itemCount should be 2');
             return contractInstance.getItemsOnSale.call();
         }).then(function(data) {
-            assert.equal(data.length, 2, 'there should be 1 item for sale');
-            assert.equal(data[1].toNumber(), 2, 'item for sale should have the item id as 2');
+            assert.equal(data.length, 2, 'there should be 2 items for sale');
+            assert.equal(data[1].toNumber(), 2, 'new item listed for sale should have the item id as 2');
             return contractInstance.items.call(data[1].toNumber());
         }).then(function(data) {
             assert.equal(data[0].toNumber(), 2, 'item id should be 2');
@@ -109,6 +116,9 @@ contract('Craigslist', function(accounts) {
             assert.equal(data[4], desc2, 'item desc should be ' + desc2);
             assert.equal(web3.fromWei(data[5].toNumber(), "ether"), price2, 'price should be ' + price2);
             assert.equal(data[6], statusAfterListing, 'item status should be ' + statusAfterListing);
+            return contractInstance.itemBoughtCount.call();
+        }).then(function(data) {
+            assert.equal(data, 0, 'items bought should be 0');
         });
     });
 
@@ -188,6 +198,9 @@ contract('Craigslist', function(accounts) {
         }).then(function(data) {
             assert.equal(data.length, 1, 'there should be 1 item for sale');
             assert.equal(data[0].toNumber(), 2, 'item for sale should have the item id as 2');
+            return contractInstance.itemBoughtCount.call();
+        }).then(function(data) {
+            assert.equal(data, 1, 'items bought should be 1');
         });
     });
 

@@ -8,7 +8,12 @@ import "./Owned.sol";
 contract Craigslist is Owned {
 
 	// custom types
-	// syntactic sugar, evm does not understand structs
+	// syntactic sugar, evm does not understand structs/inheritance/abstract/interface etc.
+
+	enum ItemStatus {
+		AVAILABLE, SOLD
+	}
+
 	struct Item {
 		uint id;
 		address seller;
@@ -16,7 +21,7 @@ contract Craigslist is Owned {
 		string name;
 		string desc;
 		uint256 price;
-		string status;
+		ItemStatus status;
 	}
 	
 	// map that stores (itemId -> Item)
@@ -26,22 +31,13 @@ contract Craigslist is Owned {
 	// this means we know that any item id > 10 is invalid
 	// also since "items" is public, evm will create a getter by default
 	mapping(uint => Item) public items;
-	uint itemCount;
+	uint public itemCount;
+	uint public itemBoughtCount;
 
-	// declare events
-	// "indexed" <--- allows to search/filer
-	event itemListedEvent(uint indexed _id, address indexed _seller, string _name, uint256 _price, string _status);
-	event itemBoughtEvent(uint indexed _id, address indexed _seller, address indexed _buyer, string _name, uint256 _price, string _status);
-
-	// modifiers
-	modifier onlyOwner() {
-		
-		// anyone other than owner will be rejected
-		require(msg.sender == owner);
-
-		// Continue if all above validations pass
-		_;
-	}
+	// events
+	// "indexed" <--- allows to search/filter
+	event itemListedEvent(uint indexed _id, address indexed _seller, string _name, uint256 _price, ItemStatus _status);
+	event itemBoughtEvent(uint indexed _id, address indexed _seller, address indexed _buyer, string _name, uint256 _price, ItemStatus _status);
 
 	// sell the item, will result in a txn
 	function listItem(string _name, string _desc, uint256 _price) public {
@@ -50,14 +46,14 @@ contract Craigslist is Owned {
 		itemCount++;
 
 		// create new item and put it on our map
-		items[itemCount] = Item(itemCount, msg.sender, 0x0, _name, _desc, _price, "Available");
+		items[itemCount] = Item(itemCount, msg.sender, 0x0, _name, _desc, _price, ItemStatus.AVAILABLE);
 
 		// trigger the event
-		itemListedEvent(itemCount, msg.sender, _name, _price, "Available");
+		itemListedEvent(itemCount, msg.sender, _name, _price, ItemStatus.AVAILABLE);
 	}
 
 	// buy the item, will result in a txn
-	// payable means this function can transfer ethers
+	// payable means this function can accept/transfer ethers
 	// without payable, you cannot send value to a function
 	function buyItem(uint _id) payable public {
 		
@@ -73,7 +69,7 @@ contract Craigslist is Owned {
 		Item storage item = items[_id];
 
 		// item should still be available
-		require(keccak256(item.status) == keccak256("Available"));
+		require(item.status == ItemStatus.AVAILABLE);
 
 		// buyer cannot be the seller
 		require(msg.sender != item.seller);
@@ -83,8 +79,9 @@ contract Craigslist is Owned {
 
 		// update internal states marking the item sold
 		item.buyer = msg.sender;
-		item.status = "Sold";
+		item.status = ItemStatus.SOLD;
 		item.seller.transfer(msg.value);
+		itemBoughtCount++;
 		
 		// trigger the event
 		itemBoughtEvent(_id, item.seller, item.buyer, item.name, item.price, item.status);
@@ -117,7 +114,7 @@ contract Craigslist is Owned {
 		for (uint i = 1; i <= itemCount; i++) {
 
 			// we only need ones that are not sold yet
-			if (keccak256(items[i].status) == keccak256("Available")) {
+			if(items[i].status == ItemStatus.AVAILABLE) {
 				itemIds[forSaleItemCount] = items[i].id;
 				forSaleItemCount++;
 			}

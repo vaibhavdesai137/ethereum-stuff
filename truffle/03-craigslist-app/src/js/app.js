@@ -4,6 +4,22 @@ $(function() {
     });
 });
 
+// Blocker waiting for metamask to fetch txn receipt
+var blockUiOptions = {
+    message: '<h3>Please sign the transaction...</h5><img height="100" width="150" src="images/blockchain-loader.gif" />',
+    fadeIn: 700,
+    fadeOut: 700,
+    css: {
+        border: 'none',
+        backgroundColor: '#000',
+        '-webkit-border-radius': '5px',
+        '-moz-border-radius': '5px',
+        opacity: .5,
+        color: '#fff',
+        padding: '10px'
+    }
+};
+
 App = {
 
     web3Provider: null,
@@ -14,6 +30,8 @@ App = {
     networkId: '',
     networkName: '',
     etherscanEndpoint: '',
+    seenListItemEvents: [],
+    seenBuyItemEvents: [],
 
     init: function() {
         App.initWeb3();
@@ -156,16 +174,27 @@ App = {
             var itemsRow = $('#itemsRow');
             itemsRow.empty();
 
-            // Query details for each id and update the UI
-            for (var i = 0; i < itemIds.length; i++) {
+            if (itemIds.length === 0) {
+                $('#nothingOnSaleDiv').show();
+            } else {
 
-                // Weird bug in metamask that causes conversion error
-                // Explicitly convert since our contract is expecting a uint
-                var itemId = itemIds[i].toNumber();
-                contractInstance.items.call(itemId).then(function(item) {
-                    App.displayItem(item[0], item[1], item[2], item[3], item[4], item[5], item[6]);
-                });
+                // Query details for each id and update the UI
+                for (var i = 0; i < itemIds.length; i++) {
+
+                    // Weird bug in metamask that causes conversion error
+                    // Explicitly convert since our contract is expecting a uint
+                    var itemId = itemIds[i].toNumber();
+                    contractInstance.items.call(itemId).then(function(item) {
+                        App.displayItem(item[0], item[1], item[2], item[3], item[4], item[5], item[6]);
+                    });
+                }
             }
+            return contractInstance.itemCount.call();
+        }).then(function(data) {
+            $('#itemListedCount').html(data.toNumber());
+            return contractInstance.itemBoughtCount.call();
+        }).then(function(data) {
+            $('#itemBoughtCount').html(data.toNumber());
             App.loading = false;
         }).catch(function(err) {
             App.loading = false;
@@ -192,10 +221,13 @@ App = {
         itemTemplate.find('.btn-buy').attr('data-id', id);
         itemTemplate.find('.btn-buy').attr('data-value', priceInEth);
 
+        // Solidity returns uint for enums
+        // ItemStatus = {AVAILABLE, SOLD}
+        var itemStatus = (status.toNumber() === 0) ? "Available" : "Sold";
         itemTemplate.find('.panel-title').text(name);
         itemTemplate.find('.item-desc').text(desc);
         itemTemplate.find('.item-price').text(priceInEth);
-        itemTemplate.find('.item-status').text(status);
+        itemTemplate.find('.item-status').text(itemStatus);
         itemTemplate.find('.item-seller').html(App.getEtherscanAnchorTag('address', seller));
         itemTemplate.find('.item-buyer').html(App.getEtherscanAnchorTag('address', buyer));
         itemsRow.append(itemTemplate.html());
@@ -221,16 +253,19 @@ App = {
         // truffle uses promises
         // same can be done using callbacks too
         App.contracts.Craigslist.deployed().then(function(instance) {
+            $.blockUI(blockUiOptions);
             return instance.listItem(itemName, itemDesc, itemPriceInWei, {
                 from: itemSeller,
                 gas: 500000
             });
         }).then(function(response) {
+            $.unblockUI();
             var txnHash = response.receipt.transactionHash;
             var aTag = App.getEtherscanAnchorTag('transaction', txnHash);
-            var msg = '<strong>Success!</strong> You just created an ethereum transaction...<br/>' + aTag;
+            var msg = '<strong>Successful Transaction!</strong> Please wait for the block to be mined...<br/>' + aTag;
             App.showAlert('success', msg);
         }).catch(function(err) {
+            $.unblockUI();
             var msg = '<strong>Error!</strong> Something went wrong...<br/>' + err;
             App.showAlert('error', msg);
         });
@@ -249,59 +284,73 @@ App = {
         // truffle uses promises
         // same can be done using callbacks too
         App.contracts.Craigslist.deployed().then(function(instance) {
+            $.blockUI(blockUiOptions);
             return instance.buyItem(itemId, {
                 from: itemBuyer,
                 gas: 500000,
                 value: itemPriceInWei
             });
         }).then(function(response) {
+            $.unblockUI();
             var txnHash = response.receipt.transactionHash;
             var aTag = App.getEtherscanAnchorTag('transaction', txnHash);
-            var msg = '<strong>Success!</strong> You just created an ethereum transaction...<br/>' + aTag;
+            var msg = '<strong>Successful Transaction!</strong> Please wait for the block to be mined...<br/>' + aTag;
             App.showAlert('success', msg);
         }).catch(function(err) {
+            $.unblockUI();
             var msg = '<strong>Error!</strong> Something went wrong...<br/>' + err;
             App.showAlert('error', msg);
         });
     },
 
     // Listeners for all events from our contract
+    // For whatever reason, events seem to firing infinitely in a loop
+    // Explicitly keep a track of seen events to prevent UI from going bonkers
+    // And refresh UI only if a new event is received
     eventListeners: function() {
 
         App.contracts.Craigslist.deployed().then(function(instance) {
 
             // Attach listener for listItem event
             instance.itemListedEvent({}, {
-                fromBlock: 0,
+                fromBlock: 1,
                 toBlock: 'latest'
             }).watch(function(err, event) {
 
                 if (err) {
                     console.log(err);
                 } else {
-                    var aTag = App.getEtherscanAnchorTag('address', event.args._seller);
-                    var msg = aTag + ' ---> listed <span style="padding: 3px; background-color: yellow; font-size: 14px"><b>' + event.args._name + '</b></span> for sale';
-                    $('#events').append('<li class="list-group-item">' + msg + '</li>');
+                    var eventTxnHash = event.transactionHash;
+                    if ($.inArray(eventTxnHash, App.seenListItemEvents) === -1) {
+                        App.seenListItemEvents.push(eventTxnHash);
+                        console.log("Received itemListedEvent for txn: " + eventTxnHash);
+                        var aTag = App.getEtherscanAnchorTag('address', event.args._seller);
+                        var msg = aTag + ' ---> listed <span style="padding: 3px; background-color: yellow; font-size: 14px">' + event.args._name + '</span> for sale';
+                        $('#events').append('<li class="list-group-item">' + msg + '</li>');
+                        App.reloadItems();
+                    }
                 }
-
-                App.reloadItems();
             });
 
             // Attach listener for buyItem event
             instance.itemBoughtEvent({}, {
-                fromBlock: 0,
+                fromBlock: 1,
                 toBlock: 'latest'
             }).watch(function(err, event) {
 
                 if (err) {
                     console.log(err);
                 } else {
-                    var aTag = App.getEtherscanAnchorTag('address', event.args._buyer);
-                    var msg = aTag + ' ---> bought <span style="padding: 3px; background-color: yellow; font-size: 14px"><b>' + event.args._name + '</b></span>';
-                    $('#events').append('<li class="list-group-item">' + msg + '</li>');
+                    var eventTxnHash = event.transactionHash;
+                    if ($.inArray(eventTxnHash, App.seenBuyItemEvents) === -1) {
+                        App.seenBuyItemEvents.push(eventTxnHash);
+                        console.log("Received itemBoughtEvent for txn: " + eventTxnHash);
+                        var aTag = App.getEtherscanAnchorTag('address', event.args._buyer);
+                        var msg = aTag + ' ---> bought <span style="padding: 3px; background-color: yellow; font-size: 14px">' + event.args._name + '</span>';
+                        $('#events').append('<li class="list-group-item">' + msg + '</li>');
+                        App.reloadItems();
+                    }
                 }
-
-                App.reloadItems();
             });
         });
 

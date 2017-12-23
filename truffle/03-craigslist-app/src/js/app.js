@@ -6,7 +6,7 @@ $(function() {
 
 // Blocker waiting for metamask to fetch txn receipt
 var blockUiOptions = {
-    message: '<h3>Please sign the transaction...</h5><img height="100" width="150" src="images/blockchain-loader.gif" />',
+    message: '<h3>Please wait...</h5><img height="100" width="150" src="images/blockchain-loader.gif" />',
     fadeIn: 700,
     fadeOut: 700,
     css: {

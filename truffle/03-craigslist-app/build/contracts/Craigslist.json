@@ -279,11 +279,80 @@
           ],
           "name": "itemBoughtEvent",
           "type": "event"
+        },
+        "0xee4ddbbc99819497174617d7b8c0b66dca7f3896a0ebf5e4212d896d5a75d1e8": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "_id",
+              "type": "uint256"
+            },
+            {
+              "indexed": true,
+              "name": "_seller",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "_name",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "name": "_price",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "_status",
+              "type": "uint8"
+            }
+          ],
+          "name": "itemListedEvent",
+          "type": "event"
+        },
+        "0x32ec7e104df0da16817e531db97f949ec9c3f179797e577eeac411581878b071": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "_id",
+              "type": "uint256"
+            },
+            {
+              "indexed": true,
+              "name": "_seller",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "_buyer",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "_name",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "name": "_price",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "_status",
+              "type": "uint8"
+            }
+          ],
+          "name": "itemBoughtEvent",
+          "type": "event"
         }
       },
       "links": {},
-      "address": "0xdef7668b3e8552a49c40e37d55f7868047a602d3",
-      "updated_at": 1513896053673
+      "address": "0xc8712a4079061b8b5c3fa416b91702cf5ce81b68",
+      "updated_at": 1514004788683
     },
     "4224": {
       "events": {
@@ -1250,5 +1319,5 @@
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1514002663152
+  "updated_at": 1514004788683
 }

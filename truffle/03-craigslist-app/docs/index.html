@@ -12,7 +12,7 @@
     <!-- Bootstrap -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Application -->
+    <!-- Application CSS -->
     <link href="css/app.css" rel="stylesheet">
 </head>
 
@@ -26,9 +26,7 @@
                     <br/> &nbsp;&nbsp;&nbsp; Connected to <span id="node"></span> (<span id="network"></span>)
                 </p>
                 <p class="text-muted pull-right" style="padding-right: 20px; color: #FFF">
-                    <br/><a class="src-code-link" target="_blank" href="https://github.com/vaibhavdesai137/ethereum-stuff/tree/master/truffle/03-craigslist-app">Source Code</a>
-                    &nbsp; | &nbsp;
-                    Vaibhav Desai
+                    <br/><a class="src-code-link" target="_blank" href="https://github.com/vaibhavdesai137/ethereum-stuff/tree/master/truffle/03-craigslist-app">Source Code</a> &nbsp; | &nbsp; Vaibhav Desai
                 </p>
             </div>
         </nav>
@@ -47,8 +45,10 @@
             <div class="row panel panel-default">
                 <div class="panel-heading clearfix">
                     <div class="panel-title">
-                        <button class="btn btn-info btn-sm pull-left" data-toggle="collapse" data-target="#events">Events</button>
-                        <button class="btn btn-info btn-sm pull-right" data-toggle="modal" data-target="#listItem">List a new item</button>
+                        <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#listItem">List a new item</button>
+                        &nbsp;&nbsp;
+                        <button class="btn btn-info btn-sm" data-toggle="collapse" data-target="#events">Events</button>
+                        <p class="pull-right">Listed: <span id="itemListedCount"></span>, Bought: <span id="itemBoughtCount"></span></p>
                     </div>
                 </div>
                 <ul id="events" class="collapse list-group">
@@ -62,6 +62,10 @@
                 <!-- ITEMS LOAD HERE -->
             </div>
         </div>
+    </div>
+
+    <div class="container" id="nothingOnSaleDiv" style="display: none;">
+        <p><br/>There are no items on sale. Start by listing a new item using the button above...</p>
     </div>
 
     <div id="itemTemplate" style="display: none;">
@@ -145,6 +149,7 @@
 
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="js/bootstrap.min.js"></script>
+    <script src="js/blockUI.js"></script>
     <script src="js/web3.min.js"></script>
     <script src="js/truffle-contract.js"></script>
     <script src="js/app.js"></script>

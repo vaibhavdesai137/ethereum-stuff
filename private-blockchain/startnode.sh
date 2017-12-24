@@ -44,4 +44,4 @@
 # 	- By default, MIST looks for geth.ipc under ~/Library/Ethereum/geth.ipc for mac
 # 	- So its easier simply set that as the path so that mist runs without any issue
 
-geth --networkid 4224 --mine --datadir "./private-blockchain" --nodiscover --rpc --rpcport "8545"  --rpccorsdomain "*" --port "30303" --nat "any" --rpcapi eth,web3,personal,net --unlock 0 --password ./private-blockchain/password.sec --ipcpath "~/Library/Ethereum/geth.ipc"
+geth --networkid 4224 --mine --datadir "./private-blockchain/" --nodiscover --rpc --rpcport "8545"  --rpccorsdomain "*" --port "30303" --nat "any" --rpcapi eth,web3,personal,net --unlock 0 --password ./private-blockchain/password.sec --ipcpath "~/Library/Ethereum/geth.ipc"

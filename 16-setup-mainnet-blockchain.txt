@@ -1,0 +1,153 @@
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# To deploy contracts on mainnet, we will need to get geth running on mainnet
+# For this, we'll have to do what we did for private blockchain (runnning geth)
+# Create a mainnet-blockchain directory at root level
+# No need for a genesis block for mainnnet, geth will deal with it
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# Start geth and start syncing
+# Detailed information available in the shell script
+# This will start syncing the mainnet blockchain
+./mainnet-blockchain/startnode.sh 
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# Verify you see the same dir structure
+tree ./mainnet-blockchain/
+
+├── geth
+│   ├── LOCK
+│   ├── chaindata
+│   │   ├── 000001.log
+│   │   ├── CURRENT
+│   │   ├── LOCK
+│   │   ├── LOG
+│   │   └── MANIFEST-000000
+│   ├── nodekey
+│   ├── nodes
+│   │   ├── 000001.log
+│   │   ├── CURRENT
+│   │   ├── LOCK
+│   │   ├── LOG
+│   │   └── MANIFEST-000000
+│   └── transactions.rlp
+├── keystore
+├── readme-imp.txt
+└── startnode.sh
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# Create a new account
+# This is real money. Do not use this account for trading
+# I am using it only for contract deployments
+geth --datadir ./mainnet-blockchain account new (3 times)
+Your new account is locked with a password. Please give a password. Do not forget this password.
+Passphrase: 
+Repeat passphrase:  
+
+# Verify accounts are created
+geth --datadir ./mainnet-blockchain account list
+Account #0: {db5d724d9fcd93da192cafcd3c3d89419365e943} keystore:///../mainnet-blockchain/keystore/UTC--2017-12-24T03-14-07.389585978Z--...
+
+# Verify the dir structure as well
+tree ./mainnet-blockchain
+
+├── geth
+│   ├── LOCK
+│   ├── chaindata
+│   │   ├── 000233.ldb
+│   │   ├── 000234.ldb
+│   │   ├── ...
+│   │   ├── ...
+│   │   ├── ...
+│   │   ├── 067085.ldb
+│   │   ├── 067086.ldb
+│   │   ├── CURRENT
+│   │   ├── LOCK
+│   │   ├── LOG
+│   │   └── MANIFEST-000000
+│   ├── ethash
+│   │   ├── cache-R23-129656acf5804305
+│   │   ├── cache-R23-2228076c08ee5e35
+│   │   └── cache-R23-39c5f107628ba618
+│   ├── nodekey
+│   ├── nodes
+│   │   ├── 000004.log
+│   │   ├── 000006.ldb
+│   │   ├── CURRENT
+│   │   ├── LOCK
+│   │   ├── LOG
+│   │   └── MANIFEST-000000
+│   └── transactions.rlp
+├── keystore
+│   └── UTC--2017-12-24T03-14-07.389585978Z--...
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# Attach to geth in a separate terminal
+# We can also do 'geth --datadir "./mainnet-blockchain/" console' to get the console while running geth in the same window
+# But its too confuisng since eth logs keep getting printed there.
+# Make sure the datadir matches where you blockchain data is stored (you may be running multiple nodes)
+# Attaching directly to rpc port also works
+# geth attach http://localhost:8545
+
+$ geth attach
+Welcome to the Geth JavaScript console!
+
+instance: Geth/v1.7.3-stable/darwin-amd64/go1.9.2
+coinbase: 0xdb5d724d9fcd93da192cafcd3c3d89419365e943
+at block: 0 (Wed, 31 Dec 1969 16:00:00 PST)
+ datadir: /Users/vaidesai/Development/git/vaibhavdesai137/ethereum-stuff/mainnet-blockchain
+ modules: admin:1.0 debug:1.0 eth:1.0 miner:1.0 net:1.0 personal:1.0 rpc:1.0 txpool:1.0 web3:1.0
+
+------------------------------------------------------------------------------------------------------------------------------
+# Lets play around with some geth commands
+
+# Check if the blocks are syncing
+> eth.syncing
+{
+  currentBlock: 3966604,
+  highestBlock: 4786160,
+  knownStates: 4734297,
+  pulledStates: 4715887,
+  startingBlock: 0
+}
+
+# Once the syncing is complete, you should see false
+> eth.syncing
+false
+> eth.blockNumber
+4786160
+
+# Check accounts
+# This should match the account we created earlier
+> eth.accounts
+["0xdb5d724d9fcd93da192cafcd3c3d89419365e943"]
+
+# Check if our mining rewards are going to 1st account as expected
+> eth.coinbase
+"0xdb5d724d9fcd93da192cafcd3c3d89419365e943"
+
+# Stop mining, verify in the other terminal that mining has stopped
+> miner.stop()
+
+# Start mining, verify in the other terminal that mining has stopped
+# You can also control how many threads to use for mining
+> miner.start()
+> miner.start(3) <--- 3 parallel threads
+
+# Get network identifier
+# Should be 1 since mainnet is on 4 (& we started our geth with networkid as 1)
+> net.version
+"4"
+
+# Lock/Unlock account from terminal
+> personal.unlockAccount(eth.accounts[0]);
+Unlock account 0x6abd9270bac4a7ab672907e83b319a9041800a3d
+Passphrase: 
+true
+
+------------------------------------------------------------------------------------------------------------------------------

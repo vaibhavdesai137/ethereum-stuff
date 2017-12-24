@@ -2,8 +2,8 @@
 ------------------------------------------------------------------------------------------------------------------------------
 
 # Initialize a private chain
-geth --datadir ./private-blockchain init ./private-blockchain/genesis.json
-tree ./private-blockchain
+$ geth --datadir ./private-blockchain init ./private-blockchain/genesis.json
+$ tree ./private-blockchain
 
 ├── genesis.json
 ├── geth
@@ -25,19 +25,19 @@ tree ./private-blockchain
 ------------------------------------------------------------------------------------------------------------------------------
 
 # Create 3 new accounts for testing
-geth --datadir ./private-blockchain account new (3 times)
+$ geth --datadir ./private-blockchain account new (3 times)
 Your new account is locked with a password. Please give a password. Do not forget this password.
 Passphrase: 
 Repeat passphrase: 
 
 # Verify accounts are created
-geth --datadir ./private-blockchain account list
+$ geth --datadir ./private-blockchain account list
 Account #0: {4fdf533660f6dc6f99de1d72ac2851a1acf1bf0d} keystore:///../private-blockchain/keystore/UTC--2017-12-13T07-54-24.079784961Z...
 Account #1: {0297074de7fbe97628a12950a273a3808ccaa5e2} keystore:///../private-blockchain/keystore/UTC--2017-12-13T07-55-46.932748232Z...
 Account #2: {4138650371f74c8d4b763dc4410e6e786207b570} keystore:///../private-blockchain/keystore/UTC--2017-12-13T07-55-54.484415300Z...
 
 # Verify the dir structure as well
-tree ./private-blockchain
+$ tree ./private-blockchain
 
 ├── genesis.json
 ├── geth
@@ -54,8 +54,8 @@ tree ./private-blockchain
 │       ├── LOG
 │       └── MANIFEST-000000
 ├── keystore
-│   ├── UTC--2017-12-13T07-54-24.079784961Z--4fdf533660f6dc6f99de1d72ac2851a1acf1bf0d
-│   ├── UTC--2017-12-13T07-55-46.932748232Z--0297074de7fbe97628a12950a273a3808ccaa5e2
-│   └── UTC--2017-12-13T07-55-54.484415300Z--4138650371f74c8d4b763dc4410e6e786207b570
+│   ├── UTC--2017-12-13T07-54-24.079784961Z--...
+│   ├── UTC--2017-12-13T07-55-46.932748232Z--...
+│   └── UTC--2017-12-13T07-55-54.484415300Z--...
 
 ------------------------------------------------------------------------------------------------------------------------------

@@ -2,12 +2,12 @@
 ------------------------------------------------------------------------------------------------------------------------------
 
 # Make sure you have geth running and connected to rinkeby network
-# Follow steps mentioned in ../../15-setup-rinkeby-blockchain.txt
-# Come back here when local node is in sync with rinkeby network
+# Follow steps mentioned in ../../16-setup-mainnet-blockchain.txt
+# Come back here when local node is in sync with mainnet network
 
 ------------------------------------------------------------------------------------------------------------------------------
 
-# Now that rinkey is all up to date on our node, we will proceed with contract deployment
+# Now that mainnet is all up to date on our node, we will proceed with contract deployment
 
 # You can deploy the front end wherever you like
 # For our app, since we interact with blockchain via metamask, we simply need a way to load our frontend
@@ -26,64 +26,52 @@
 # Now with testrpc, all acounts are unlocked by default
 # But for any other network, we'll have to explicitly unlock the account via geth
 # By default, truffle uses the 1st account from the list to deploy the contract
-# Lets unlock all 3 accounts anyway
+# Lets unlock our only account anyway
 
 # We'll use the 1st account to deploy the contract
 > eth.accounts
-["0xce1f115599c3ab2bc6c118da8b167728f1e64217", "0x6abd9270bac4a7ab672907e83b319a9041800a3d", "0xc3edc1ede9f73cea8c01a07e9050035626ea2bad"]
+["0xdb5d724d9fcd93da192cafcd3c3d89419365e943"]
 > personal.unlockAccount(eth.accounts[0]);
-> personal.unlockAccount(eth.accounts[1]);
-> personal.unlockAccount(eth.accounts[2]);
 
-# Our new accounts on rinkeby would have 0 ETH
-# You can either get funds from faucet: https://faucet.rinkeby.io/
-# Or beg someone to send you some
-
-# After begging some ETH from the web, this is what we have now
-web3.fromWei(web3.eth.getBalance('0xce1f115599c3ab2bc6c118da8b167728f1e64217'), "ether"); ---> 9.19979
-web3.fromWei(web3.eth.getBalance('0x6abd9270bac4a7ab672907e83b319a9041800a3d'), "ether"); ---> 5
-web3.fromWei(web3.eth.getBalance('0xc3edc1ede9f73cea8c01a07e9050035626ea2bad'), "ether"); ---> 5
+# Our new accounts on mainnet would have 0 ETH
+# Use any exchange to buy some ether and transfer it to this address
+# Once some ether is available, check the balance
+web3.fromWei(web3.eth.getBalance('0xdb5d724d9fcd93da192cafcd3c3d89419365e943'), "ether"); ---> 0
 
 ------------------------------------------------------------------------------------------------------------------------------
 
-# Ok so now that we have ETH in our accounts, we can deploy the contract to rinkeby
+# Ok so now that we have ETH in our account, we can deploy the contract to mainnet
 # Now that we have multiple networks configured in truffle.js, we'll have to specify which network we want the contract to be deployed to
 # Whichever network we select, make sure geth is running connected to that network
 
 # Without enough ethers in account, deploying will fail:
-# truffle migrate --network rinkeby
-# Error encountered, bailing. Network state unknown. Review successful transactions manually.
-# Error: insufficient funds for gas * price + value
-
-truffle migrate --network rinkeby
-# Using network 'rinkeby'.
+# truffle migrate --network mainnet
+# Using network 'mainnet'.
 # Running migration: 1_initial_migration.js
 #   Deploying Migrations...
-#   Migrations: 0x105e74b546de5a9d162ed749f9e5eb7e3df75afc
+#   Migrations: ...
 # Saving successful migration to network...
 # Saving artifacts...
 # Running migration: 2_deploy_contracts.js
 #   Deploying Craigslist...
-#   Craigslist: 0xdef7668b3e8552a49c40e37d55f7868047a602d3
+#   Craigslist: ...
 # Saving successful migration to network...
 # Saving artifacts...
 
-# And since rinkeby is public, the contract addresses can be validated
-# Migrations: https://rinkeby.etherscan.io/address/0x105e74b546de5a9d162ed749f9e5eb7e3df75afc
-# Craigslist: https://rinkeby.etherscan.io/address/0xdef7668b3e8552a49c40e37d55f7868047a602d3
+# And since mainnet is public, the contract addresses can be validated
+# Migrations: https://etherscan.io/address/...
+# Craigslist: https://etherscan.io/address/...
 
 # Now that contract is deployed:
-# Verify build/contracts/Migrations.json now shows details for rinkeby
-# Verify build/contracts/Craigslist.json now shows details for rinkeby
+# Verify build/contracts/Migrations.json now shows details for mainnet
+# Verify build/contracts/Craigslist.json now shows details for mainnet
 
-# Deploy the changes to frontend since Craigslist.json now has metadata for rinkeby
+# Deploy the changes to frontend since Craigslist.json now has metadata for mainnet
 # ./deploy-frontend.sh
 
 ------------------------------------------------------------------------------------------------------------------------------
 
-# Check balances again to verify 1st account lost some ethers for deploying contract
-web3.fromWei(web3.eth.getBalance('0xce1f115599c3ab2bc6c118da8b167728f1e64217'), "ether"); ---> 9.0849103
-web3.fromWei(web3.eth.getBalance('0x6abd9270bac4a7ab672907e83b319a9041800a3d'), "ether"); ---> 5
-web3.fromWei(web3.eth.getBalance('0xc3edc1ede9f73cea8c01a07e9050035626ea2bad'), "ether"); ---> 5
+# Check balances again to verify our account lost some ethers for deploying contract
+web3.fromWei(web3.eth.getBalance('0xdb5d724d9fcd93da192cafcd3c3d89419365e943'), "ether"); ---> 0
 
 ------------------------------------------------------------------------------------------------------------------------------

@@ -2,5 +2,7 @@ private-blockchain/geth/
 private-blockchain/keystore/
 rinkeby-blockchain/geth/
 rinkeby-blockchain/keystore/
+mainnet-blockchain/geth/
+mainnet-blockchain/keystore/
 node_modules/
 

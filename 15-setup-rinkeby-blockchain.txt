@@ -3,14 +3,14 @@
 
 # To deploy contracts on rinkey, we will need to get geth running on rinkeby
 # For this, we'll have to do what we did for private blockchain (runnning geth)
-# Create a rinkeby directory at root level
+# Create a rinkeby-blockchain directory at root level
 # Download rinkeby.json from https://www.rinkeby.io/#geth
 
 ------------------------------------------------------------------------------------------------------------------------------
 
-# Join the rinkeby network using geth
-geth --datadir ./rinkeby-blockchain/ init ./rinkeby-blockchain/rinkeby.json
-tree ./rinkeby-blockchain/
+# Create the basic dir structure using geth
+$ geth --datadir ./rinkeby-blockchain/ init ./rinkeby-blockchain/rinkeby.json
+$ tree ./rinkeby-blockchain/
 
 ├── geth
 │   ├── chaindata
@@ -31,19 +31,19 @@ tree ./rinkeby-blockchain/
 ------------------------------------------------------------------------------------------------------------------------------
 
 # Create 3 new accounts
-geth --datadir ./rinkeby-blockchain account new (3 times)
+$ geth --datadir ./rinkeby-blockchain account new (3 times)
 Your new account is locked with a password. Please give a password. Do not forget this password.
 Passphrase: 
 Repeat passphrase: 
 
 # Verify accounts are created
-geth --datadir ./rinkeby-blockchain account list
+$ geth --datadir ./rinkeby-blockchain account list
 Account #0: {ce1f115599c3ab2bc6c118da8b167728f1e64217} keystore:///../rinkeby-blockchain/keystore/UTC--2017-12-21T03-36-16.527790666Z--...
 Account #1: {6abd9270bac4a7ab672907e83b319a9041800a3d} keystore:///../rinkeby-blockchain/keystore/UTC--2017-12-21T03-36-33.863625151Z--...
 Account #2: {c3edc1ede9f73cea8c01a07e9050035626ea2bad} keystore:///../rinkeby-blockchain/keystore/UTC--2017-12-21T03-36-56.031081804Z--...
 
 # Verify the dir structure as well
-tree ./rinkeby-blockchain
+$ tree ./rinkeby-blockchain
 
 ├── rinkeby.json
 ├── geth
@@ -60,27 +60,27 @@ tree ./rinkeby-blockchain
 │       ├── LOG
 │       └── MANIFEST-000000
 ├── keystore
-│   ├── UTC--2017-12-21T03-36-16.527790666Z--ce1f115599c3ab2bc6c118da8b167728f1e64217
-│   ├── UTC--2017-12-21T03-36-33.863625151Z--6abd9270bac4a7ab672907e83b319a9041800a3d
-│   └── UTC--2017-12-21T03-36-56.031081804Z--c3edc1ede9f73cea8c01a07e9050035626ea2bad
+│   ├── UTC--2017-12-21T03-36-16.527790666Z--...
+│   ├── UTC--2017-12-21T03-36-33.863625151Z--...
+│   └── UTC--2017-12-21T03-36-56.031081804Z--...
 
 ------------------------------------------------------------------------------------------------------------------------------
 
 # Start geth
 # Detailed information available in the shell script
-# This will start downloading the syncing the rinkeby blockchain
-./rinkeby-blockchain/startnode.sh 
+# This will start syncing the rinkeby blockchain
+$ ./rinkeby-blockchain/startnode.sh 
 
 ------------------------------------------------------------------------------------------------------------------------------
 
 # Attach to geth in a separate terminal
-# We can also do 'geth --datadir "./private-blockchain/" console' to get the console while running geth in the same window
+# We can also do 'geth --datadir "./rinkeby-blockchain/" console' to get the console while running geth in the same window
 # But its too confuisng since eth logs keep getting printed there.
 # Make sure the datadir matches where you blockchain data is stored (you may be running multiple nodes)
 # Attaching directly to rpc port also works
 # geth attach http://localhost:8545
 
-geth attach ~/Library/Ethereum/geth.ipc 
+$ geth attach ~/Library/Ethereum/geth.ipc 
 
 Welcome to the Geth JavaScript console!
 
@@ -128,7 +128,7 @@ false
 > miner.start(3) <--- 3 parallel threads
 
 # Get network identifier
-# Should be 4 since rinkeby is on 4 (& we started our geth with netword id as 4)
+# Should be 4 since rinkeby is on 4 (& we started our geth with networkid as 4)
 > net.version
 "4"
 

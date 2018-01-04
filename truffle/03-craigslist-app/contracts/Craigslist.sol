@@ -22,6 +22,7 @@ contract Craigslist is Owned {
 		string desc;
 		uint256 price;
 		ItemStatus status;
+		string ipfsHash;
 	}
 	
 	// map that stores (itemId -> Item)
@@ -40,13 +41,13 @@ contract Craigslist is Owned {
 	event itemBoughtEvent(uint indexed _id, address indexed _seller, address indexed _buyer, string _name, uint256 _price, ItemStatus _status);
 
 	// sell the item, will result in a txn
-	function listItem(string _name, string _desc, uint256 _price) public {
+	function listItem(string _name, string _desc, uint256 _price, string _ipfsHash) public {
 		
 		// increment item count
 		itemCount++;
 
 		// create new item and put it on our map
-		items[itemCount] = Item(itemCount, msg.sender, 0x0, _name, _desc, _price, ItemStatus.AVAILABLE);
+		items[itemCount] = Item(itemCount, msg.sender, 0x0, _name, _desc, _price, ItemStatus.AVAILABLE, _ipfsHash);
 
 		// trigger the event
 		itemListedEvent(itemCount, msg.sender, _name, _price, ItemStatus.AVAILABLE);

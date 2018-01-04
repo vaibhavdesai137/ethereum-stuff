@@ -45,8 +45,7 @@
             <div class="row panel panel-default">
                 <div class="panel-heading clearfix">
                     <div class="panel-title">
-                        <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#listItem">List a new item</button>
-                        &nbsp;&nbsp;
+                        <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#listItem">List a new item</button> &nbsp;&nbsp;
                         <button class="btn btn-info btn-sm" data-toggle="collapse" data-target="#events">Events</button>
                         <p class="pull-right">Listed: <span id="itemListedCount"></span>, Bought: <span id="itemBoughtCount"></span></p>
                     </div>
@@ -72,25 +71,35 @@
         <div class="row-lg-12">
             <div class="panel panel-default panel-item">
                 <div class="panel-heading">
-                    <h3 class="panel-title"></h3>
+                    <h3 class="panel-title item-name"></h3>
                 </div>
                 <div class="panel-body">
-                    <strong>Item Description</strong>:
-                    <span class="item-desc"></span>
-                    <br/>
-                    <strong>Item Price (ETH)</strong>:
-                    <span class="item-price"></span>
-                    <br/>
-                    <strong>Item Status</strong>:
-                    <span class="item-status"></span>
-                    <br/>
-                    <br/>
-                    <strong>Item Sold By</strong>:
-                    <span class="item-seller"></span>
-                    <br/>
-                    <strong>Item Bought By</strong>:
-                    <span class="item-buyer"></span>
-                    <br/>
+                    <div class="row">
+                        <div class="col-lg-9">
+                            <strong>Item Description</strong>:
+                            <span class="item-desc"></span>
+                            <br/>
+                            <strong>Item Price (ETH)</strong>:
+                            <span class="item-price"></span>
+                            <br/>
+                            <strong>Item Status</strong>:
+                            <span class="item-status"></span>
+                            <br/>
+                            <br/>
+                            <strong>Item Sold By</strong>:
+                            <span class="item-seller"></span>
+                            <br/>
+                            <strong>Item Bought By</strong>:
+                            <span class="item-buyer"></span>
+                            <br/>
+                        </div>
+                        <!--<div class="col-lg-3">
+                            <span class="item-image"></span>
+                        </div>-->
+                        <div class="col-lg-3">
+                            <img class="item-image thumbnail" width="100px" height="100px"/>
+                        </div>
+                    </div>
                 </div>
                 <div class="panel-footer">
                     <button class="btn btn-success btn-md btn-buy" onclick="App.buyItem(); return false;">Buy</button>
@@ -127,6 +136,11 @@
                                     <label for="item_desc">Item Description</label>
                                     <textarea type="text" class="form-control vresize" id="item_desc" placeholder="Enter the description of your item..." maxlength="255"></textarea>
                                 </div>
+                                <hr/>
+                                <div class="form-group">
+                                    <label for="item_desc">Item Image (will be uploaded to IPFS)</label>
+                                    <input type='file' id='item_image' />
+                                </div>
                             </form>
                         </div>
                     </div>
@@ -140,14 +154,12 @@
         </div>
     </div>
 
-    <div id="footer" class="container">
-
-    </div>
-
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 
     <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="https://wzrd.in/standalone/buffer"></script>
+    <script src="https://unpkg.com/ipfs-api@9.0.0/dist/index.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/blockUI.js"></script>
     <script src="js/web3.min.js"></script>

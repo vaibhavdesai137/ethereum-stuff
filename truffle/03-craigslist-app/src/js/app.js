@@ -112,6 +112,8 @@ App = {
 
             App.account = account;
             $('#account').html(App.getEtherscanAnchorTag('address', account));
+
+            // Get account balance
             web3.eth.getBalance(account, function(err, balance) {
                 if (err == null) {
                     accountBalanceInEther = web3.fromWei(balance, "ether");
@@ -185,7 +187,7 @@ App = {
                     // Explicitly convert since our contract is expecting a uint
                     var itemId = itemIds[i].toNumber();
                     contractInstance.items.call(itemId).then(function(item) {
-                        App.displayItem(item[0], item[1], item[2], item[3], item[4], item[5], item[6]);
+                        App.displayItem(item[0], item[1], item[2], item[3], item[4], item[5], item[6], item[7]);
                     });
                 }
             }
@@ -203,13 +205,13 @@ App = {
     },
 
     // Render the given item on UI
-    displayItem: function(id, seller, buyer, name, desc, price, status) {
+    displayItem: function(id, seller, buyer, name, desc, price, status, ipfsHash) {
 
         var itemsRow = $('#itemsRow');
         var itemTemplate = $('#itemTemplate');
         var priceInEth = web3.fromWei(price.toNumber(), "ether");
 
-        // hide buy button if the app.account is the seller of if already sold
+        // hide buy button if the app.account is the seller or if already sold
         if (seller == App.account || status == 'Sold') {
             itemTemplate.find('.btn-buy').prop("disabled", true);
         } else {
@@ -224,14 +226,61 @@ App = {
         // Solidity returns uint for enums
         // ItemStatus = {AVAILABLE, SOLD}
         var itemStatus = (status.toNumber() === 0) ? "Available" : "Sold";
-        itemTemplate.find('.panel-title').text(name);
+        itemTemplate.find('.item-name').html(name);
         itemTemplate.find('.item-desc').text(desc);
         itemTemplate.find('.item-price').text(priceInEth);
         itemTemplate.find('.item-status').text(itemStatus);
         itemTemplate.find('.item-seller').html(App.getEtherscanAnchorTag('address', seller));
         itemTemplate.find('.item-buyer').html(App.getEtherscanAnchorTag('address', buyer));
-        itemsRow.append(itemTemplate.html());
 
+        // Create an image tag within the span with an id to render from ipfs later
+        var itemImageId = 'item-image-' + id;
+        if (ipfsHash !== '') {
+            //itemTemplate.find('.item-image').prepend('<img class="thumbnail" id="' + itemImageId + '" width="150px" height="150px" />');
+            //App.renderImage(itemImageId, ipfsHash);
+            App.renderImage(itemTemplate.find('.item-image'), ipfsHash);
+        } else {
+            itemTemplate.find('.item-image').remove();
+        }
+
+        itemsRow.append(itemTemplate.html());
+    },
+
+    // Fetches the image from ipfs using hash and renders it
+    renderImage: function(i, ipfsHash) {
+
+        if (ipfsHash === '') {
+            return;
+        }
+
+        const ipfs = window.IpfsApi('ipfs.infura.io', 5001, {
+            protocol: 'https'
+        });
+
+        ipfs.files.cat(ipfsHash).then((stream) => {
+
+            var buffer = [];
+            var blob;
+
+            stream.on('data', (file) => {
+                var data = Array.prototype.slice.call(file);
+                buffer = buffer.concat(data);
+            });
+
+            stream.on('end', () => {
+                var buf = new Uint8Array(buffer);
+                var blob = new Blob([buf], {
+                    type: 'image/jpg'
+                });
+                var urlCreator = window.URL || window.webkitURL;
+                var blobUrl = urlCreator.createObjectURL(blob);
+                //$('#' + itemImageId).attr('src', blobUrl);
+                //$('#' + itemImageId).attr('alt', 'Failed to load from IPFS');
+                i.attr('id', 'foo');
+                i.attr('src', blobUrl);
+                i.attr('alt', 'Failed to load from IPFS');
+            });
+        });
     },
 
     // Load all items from the contract
@@ -243,6 +292,7 @@ App = {
         var itemPrice = parseFloat($('#item_price').val()) || 0;
         var itemPriceInWei = web3.toWei(itemPrice, "ether");
         var itemSeller = App.account;
+        var itemImage = document.getElementById('item_image');
 
         // validation
         if (itemName.trim() == '' || itemDesc.trim() == '' || itemPrice == 0) {
@@ -254,7 +304,11 @@ App = {
         // same can be done using callbacks too
         App.contracts.Craigslist.deployed().then(function(instance) {
             $.blockUI(blockUiOptions);
-            return instance.listItem(itemName, itemDesc, itemPriceInWei, {
+            contractInstance = instance;
+            return App.uploadToIpfs(itemImage);
+        }).then(function(ipfsHash) {
+            //var ipfsHashToBytes32 = App.ipfsHashToBytes32(ipfsHash);
+            return contractInstance.listItem(itemName, itemDesc, itemPriceInWei, ipfsHash, {
                 from: itemSeller,
                 gas: 500000
             });
@@ -268,6 +322,43 @@ App = {
             $.unblockUI();
             var msg = '<strong>Error!</strong> Something went wrong...<br/>' + err;
             App.showAlert('error', msg);
+        });
+    },
+
+    // Uploads an image to ipfs and returns the hash
+    uploadToIpfs: function(image) {
+
+        return new Promise(function(resolve, reject) {
+
+            // pass through if no image selected
+            if (image.files.length == 0) {
+                resolve('');
+            }
+
+            // Read Provided File
+            const reader = new FileReader();
+            reader.readAsArrayBuffer(image.files[0]);
+
+            reader.onloadend = function() {
+
+                // Connect to IPFS
+                const ipfs = window.IpfsApi('ipfs.infura.io', 5001, {
+                    protocol: 'https'
+                });
+
+                // Convert data into buffer
+                const buf = buffer.Buffer(reader.result);
+
+                // Upload
+                ipfs.files.add(buf, function(err, result) {
+
+                    if (err) {
+                        reject('IPFS error: ' + err);
+                    }
+
+                    resolve(result[0].hash);
+                });
+            }
         });
     },
 
@@ -419,5 +510,25 @@ App = {
 
         var aTag = '<a target="_blank" href="' + url + '">' + value + '</a>';
         return aTag;
+    },
+
+    // Converts ipfs hash to 34 bytes
+    // 1st 2 bytes represent the hash function identifier
+    // Remaining 32 bytes is the actual hash
+    // Its cheaper to store fixed length data in smart contract (which is 32 bytes)
+    // Storing all 34 bytes would need a string (dynamic length so costs more)
+    ipfsHashToBytes32: function(ipfsHash) {
+        var h = bs58.decode(ipfsHash).toString('hex').replace(/^1220/, '');
+        if (h.length != 64) {
+            console.log('invalid ipfs format', ipfsHash, h);
+            return null;
+        }
+        return '0x' + h;
+    },
+
+    // Appends the ipfs hash function identifier to the trimmed hash to retrieve the object from ipfs
+    bytes32ToIpfsHash: function(trimmedIpfsHash) {
+        var buf = new Buffer(trimmedIpfsHash.replace(/^0x/, '1220'), 'hex')
+        return bs58.encode(buf);
     }
 };

@@ -112,6 +112,8 @@ App = {
 
             App.account = account;
             $('#account').html(App.getEtherscanAnchorTag('address', account));
+
+            // Get account balance
             web3.eth.getBalance(account, function(err, balance) {
                 if (err == null) {
                     accountBalanceInEther = web3.fromWei(balance, "ether");
@@ -185,7 +187,7 @@ App = {
                     // Explicitly convert since our contract is expecting a uint
                     var itemId = itemIds[i].toNumber();
                     contractInstance.items.call(itemId).then(function(item) {
-                        App.displayItem(item[0], item[1], item[2], item[3], item[4], item[5], item[6]);
+                        App.displayItem(item[0], item[1], item[2], item[3], item[4], item[5], item[6], item[7]);
                     });
                 }
             }
@@ -203,35 +205,96 @@ App = {
     },
 
     // Render the given item on UI
-    displayItem: function(id, seller, buyer, name, desc, price, status) {
+    // Solidity returns uint for enums
+    displayItem: function(id, seller, buyer, name, desc, price, status, ipfsHash) {
 
         var itemsRow = $('#itemsRow');
-        var itemTemplate = $('#itemTemplate');
-        var priceInEth = web3.fromWei(price.toNumber(), "ether");
+        var itemPriceInEth = web3.fromWei(price.toNumber(), 'ether');
+        var itemStatus = (status.toNumber() === 0) ? 'Available' : 'Sold';
+        var itemImageId = 'itemImage' + id;
+        var itemBuyBtnId = 'buyBtn' + id;
 
-        // hide buy button if the app.account is the seller of if already sold
+        var itemDiv = '';
+        itemDiv += '<div class="row-lg-12">';
+        itemDiv += '    <div class="panel panel-default panel-item">';
+        itemDiv += '        <div class="panel-heading">';
+        itemDiv += '            <h3 class="panel-title">' + name + '</h3>';
+        itemDiv += '        </div>';
+        itemDiv += '        <div class="panel-body">';
+        itemDiv += '            <div class="row">';
+        itemDiv += '                <div class="col-lg-9">';
+        itemDiv += '                    <strong>Item Description</strong>: ' + desc + '<br/>';
+        itemDiv += '                    <strong>Item Price (ETH)</strong>: ' + itemPriceInEth + '<br/>';
+        itemDiv += '                    <strong>Item Status</strong>: ' + itemStatus + '<br/>';
+        itemDiv += '                    <strong>Item Sold By</strong>:' + App.getEtherscanAnchorTag('address', seller) + '<br/>';
+        itemDiv += '                    <strong>Item Bought By</strong>:' + App.getEtherscanAnchorTag('address', buyer) + '<br/><br/>';
+        itemDiv += '                    <button id="' + itemBuyBtnId + '" class="btn btn-success btn-md" onclick="App.buyItem(); return false;">Buy</button>';
+        itemDiv += '                </div>';
+        itemDiv += '                <div class="col-lg-3">';
+        itemDiv += '                    <img id="' + itemImageId + '" class="item-image thumbnail" width="120px" height="120px"/>';
+        itemDiv += '                </div>';
+        itemDiv += '            </div>';
+        itemDiv += '        </div>';
+        itemDiv += '    </div>';
+        itemDiv += '</div>';
+
+        // Show the item details on the UI now
+        $('#itemsRow').append(itemDiv);
+
+        // Hide buy button if the app.account is the seller or if already sold
+        var buyButtonDisabled = '';
         if (seller == App.account || status == 'Sold') {
-            itemTemplate.find('.btn-buy').prop("disabled", true);
-        } else {
-            itemTemplate.find('.btn-buy').prop("disabled", false);
+            $('#' + itemBuyBtnId).attr('disabled', true);
         }
 
         // Update the buy button with the id & the price
         // This avoids calling getItemDetails() again to fetch the item price when one wants to buy
-        itemTemplate.find('.btn-buy').attr('data-id', id);
-        itemTemplate.find('.btn-buy').attr('data-value', priceInEth);
+        $('#' + itemBuyBtnId).attr('data-id', id);
+        $('#' + itemBuyBtnId).attr('data-value', itemPriceInEth);
 
-        // Solidity returns uint for enums
-        // ItemStatus = {AVAILABLE, SOLD}
-        var itemStatus = (status.toNumber() === 0) ? "Available" : "Sold";
-        itemTemplate.find('.panel-title').text(name);
-        itemTemplate.find('.item-desc').text(desc);
-        itemTemplate.find('.item-price').text(priceInEth);
-        itemTemplate.find('.item-status').text(itemStatus);
-        itemTemplate.find('.item-seller').html(App.getEtherscanAnchorTag('address', seller));
-        itemTemplate.find('.item-buyer').html(App.getEtherscanAnchorTag('address', buyer));
-        itemsRow.append(itemTemplate.html());
+        // Render image via ajax from ipfs if available
+        if (ipfsHash !== '') {
+            App.renderImage(itemImageId, ipfsHash);
+        } else {
+            $('#' + itemImageId).remove();
+        }
+    },
 
+    // Fetches the image from ipfs using hash and renders it
+    renderImage: function(itemImageId, ipfsHash) {
+
+        if (ipfsHash === '') {
+            return;
+        }
+
+        const ipfs = window.IpfsApi('ipfs.infura.io', 5001, {
+            protocol: 'https'
+        });
+
+        ipfs.files.cat(ipfsHash).then((stream) => {
+
+            var buffer = [];
+            var blob;
+
+            stream.on('data', (file) => {
+                var data = Array.prototype.slice.call(file);
+                buffer = buffer.concat(data);
+            });
+
+            stream.on('end', () => {
+                var buf = new Uint8Array(buffer);
+                var blob = new Blob([buf], {
+                    type: 'image/jpg'
+                });
+                var urlCreator = window.URL || window.webkitURL;
+                var blobUrl = urlCreator.createObjectURL(blob);
+                $('#' + itemImageId).attr('src', blobUrl);
+                $('#' + itemImageId).attr('title', 'Downloaded from IPFS');
+            });
+        }).catch(err => {
+            $('#' + itemImageId).attr('src', './images/noimage');
+            $('#' + itemImageId).attr('alt', err);
+        });
     },
 
     // Load all items from the contract
@@ -243,6 +306,7 @@ App = {
         var itemPrice = parseFloat($('#item_price').val()) || 0;
         var itemPriceInWei = web3.toWei(itemPrice, "ether");
         var itemSeller = App.account;
+        var itemImage = document.getElementById('item_image');
 
         // validation
         if (itemName.trim() == '' || itemDesc.trim() == '' || itemPrice == 0) {
@@ -254,7 +318,11 @@ App = {
         // same can be done using callbacks too
         App.contracts.Craigslist.deployed().then(function(instance) {
             $.blockUI(blockUiOptions);
-            return instance.listItem(itemName, itemDesc, itemPriceInWei, {
+            contractInstance = instance;
+            return App.uploadToIpfs(itemImage);
+        }).then(function(ipfsHash) {
+            //var ipfsHashToBytes32 = App.ipfsHashToBytes32(ipfsHash);
+            return contractInstance.listItem(itemName, itemDesc, itemPriceInWei, ipfsHash, {
                 from: itemSeller,
                 gas: 500000
             });
@@ -268,6 +336,43 @@ App = {
             $.unblockUI();
             var msg = '<strong>Error!</strong> Something went wrong...<br/>' + err;
             App.showAlert('error', msg);
+        });
+    },
+
+    // Uploads an image to ipfs and returns the hash
+    uploadToIpfs: function(image) {
+
+        return new Promise(function(resolve, reject) {
+
+            // pass through if no image selected
+            if (image.files.length == 0) {
+                resolve('');
+            }
+
+            // Read Provided File
+            const reader = new FileReader();
+            reader.readAsArrayBuffer(image.files[0]);
+
+            reader.onloadend = function() {
+
+                // Connect to IPFS
+                const ipfs = window.IpfsApi('ipfs.infura.io', 5001, {
+                    protocol: 'https'
+                });
+
+                // Convert data into buffer
+                const buf = buffer.Buffer(reader.result);
+
+                // Upload
+                ipfs.files.add(buf, function(err, result) {
+
+                    if (err) {
+                        reject('IPFS error: ' + err);
+                    }
+
+                    resolve(result[0].hash);
+                });
+            }
         });
     },
 
@@ -372,8 +477,8 @@ App = {
         div += message;
         div += '</div>';
 
-        $('#alerts').html(div);
-        $('#alerts').show();
+        $('#txnAlerts').html(div);
+        $('#txnAlerts').show();
     },
 
     // Helper method to generate etherscan url tag
@@ -419,5 +524,25 @@ App = {
 
         var aTag = '<a target="_blank" href="' + url + '">' + value + '</a>';
         return aTag;
+    },
+
+    // Converts ipfs hash to 34 bytes
+    // 1st 2 bytes represent the hash function identifier
+    // Remaining 32 bytes is the actual hash
+    // Its cheaper to store fixed length data in smart contract (which is 32 bytes)
+    // Storing all 34 bytes would need a string (dynamic length so costs more)
+    ipfsHashToBytes32: function(ipfsHash) {
+        var h = bs58.decode(ipfsHash).toString('hex').replace(/^1220/, '');
+        if (h.length != 64) {
+            console.log('invalid ipfs format', ipfsHash, h);
+            return null;
+        }
+        return '0x' + h;
+    },
+
+    // Appends the ipfs hash function identifier to the trimmed hash to retrieve the object from ipfs
+    bytes32ToIpfsHash: function(trimmedIpfsHash) {
+        var buf = new Buffer(trimmedIpfsHash.replace(/^0x/, '1220'), 'hex')
+        return bs58.encode(buf);
     }
 };

@@ -205,49 +205,63 @@ App = {
     },
 
     // Render the given item on UI
+    // Solidity returns uint for enums
     displayItem: function(id, seller, buyer, name, desc, price, status, ipfsHash) {
 
         var itemsRow = $('#itemsRow');
-        var itemTemplate = $('#itemTemplate');
-        var priceInEth = web3.fromWei(price.toNumber(), "ether");
+        var itemPriceInEth = web3.fromWei(price.toNumber(), 'ether');
+        var itemStatus = (status.toNumber() === 0) ? 'Available' : 'Sold';
+        var itemImageId = 'itemImage' + id;
+        var itemBuyBtnId = 'buyBtn' + id;
 
-        // hide buy button if the app.account is the seller or if already sold
+        var itemDiv = '';
+        itemDiv += '<div class="row-lg-12">';
+        itemDiv += '    <div class="panel panel-default panel-item">';
+        itemDiv += '        <div class="panel-heading">';
+        itemDiv += '            <h3 class="panel-title">' + name + '</h3>';
+        itemDiv += '        </div>';
+        itemDiv += '        <div class="panel-body">';
+        itemDiv += '            <div class="row">';
+        itemDiv += '                <div class="col-lg-9">';
+        itemDiv += '                    <strong>Item Description</strong>: ' + desc + '<br/>';
+        itemDiv += '                    <strong>Item Price (ETH)</strong>: ' + itemPriceInEth + '<br/>';
+        itemDiv += '                    <strong>Item Status</strong>: ' + itemStatus + '<br/>';
+        itemDiv += '                    <strong>Item Sold By</strong>:' + App.getEtherscanAnchorTag('address', seller) + '<br/>';
+        itemDiv += '                    <strong>Item Bought By</strong>:' + App.getEtherscanAnchorTag('address', buyer) + '<br/><br/>';
+        itemDiv += '                    <button id="' + itemBuyBtnId + '" class="btn btn-success btn-md" onclick="App.buyItem(); return false;">Buy</button>';
+        itemDiv += '                </div>';
+        itemDiv += '                <div class="col-lg-3">';
+        itemDiv += '                    <img id="' + itemImageId + '" class="item-image thumbnail" width="120px" height="120px"/>';
+        itemDiv += '                </div>';
+        itemDiv += '            </div>';
+        itemDiv += '        </div>';
+        itemDiv += '    </div>';
+        itemDiv += '</div>';
+
+        // Show the item details on the UI now
+        $('#itemsRow').append(itemDiv);
+
+        // Hide buy button if the app.account is the seller or if already sold
+        var buyButtonDisabled = '';
         if (seller == App.account || status == 'Sold') {
-            itemTemplate.find('.btn-buy').prop("disabled", true);
-        } else {
-            itemTemplate.find('.btn-buy').prop("disabled", false);
+            $('#' + itemBuyBtnId).attr('disabled', true);
         }
 
         // Update the buy button with the id & the price
         // This avoids calling getItemDetails() again to fetch the item price when one wants to buy
-        itemTemplate.find('.btn-buy').attr('data-id', id);
-        itemTemplate.find('.btn-buy').attr('data-value', priceInEth);
+        $('#' + itemBuyBtnId).attr('data-id', id);
+        $('#' + itemBuyBtnId).attr('data-value', itemPriceInEth);
 
-        // Solidity returns uint for enums
-        // ItemStatus = {AVAILABLE, SOLD}
-        var itemStatus = (status.toNumber() === 0) ? "Available" : "Sold";
-        itemTemplate.find('.item-name').html(name);
-        itemTemplate.find('.item-desc').text(desc);
-        itemTemplate.find('.item-price').text(priceInEth);
-        itemTemplate.find('.item-status').text(itemStatus);
-        itemTemplate.find('.item-seller').html(App.getEtherscanAnchorTag('address', seller));
-        itemTemplate.find('.item-buyer').html(App.getEtherscanAnchorTag('address', buyer));
-
-        // Create an image tag within the span with an id to render from ipfs later
-        var itemImageId = 'item-image-' + id;
+        // Render image via ajax from ipfs if available
         if (ipfsHash !== '') {
-            //itemTemplate.find('.item-image').prepend('<img class="thumbnail" id="' + itemImageId + '" width="150px" height="150px" />');
-            //App.renderImage(itemImageId, ipfsHash);
-            App.renderImage(itemTemplate.find('.item-image'), ipfsHash);
+            App.renderImage(itemImageId, ipfsHash);
         } else {
-            itemTemplate.find('.item-image').remove();
+            $('#' + itemImageId).remove();
         }
-
-        itemsRow.append(itemTemplate.html());
     },
 
     // Fetches the image from ipfs using hash and renders it
-    renderImage: function(i, ipfsHash) {
+    renderImage: function(itemImageId, ipfsHash) {
 
         if (ipfsHash === '') {
             return;
@@ -274,12 +288,12 @@ App = {
                 });
                 var urlCreator = window.URL || window.webkitURL;
                 var blobUrl = urlCreator.createObjectURL(blob);
-                //$('#' + itemImageId).attr('src', blobUrl);
-                //$('#' + itemImageId).attr('alt', 'Failed to load from IPFS');
-                i.attr('id', 'foo');
-                i.attr('src', blobUrl);
-                i.attr('alt', 'Failed to load from IPFS');
+                $('#' + itemImageId).attr('src', blobUrl);
+                $('#' + itemImageId).attr('title', 'Downloaded from IPFS');
             });
+        }).catch(err => {
+            $('#' + itemImageId).attr('src', './images/noimage');
+            $('#' + itemImageId).attr('alt', err);
         });
     },
 
@@ -463,8 +477,8 @@ App = {
         div += message;
         div += '</div>';
 
-        $('#alerts').html(div);
-        $('#alerts').show();
+        $('#txnAlerts').html(div);
+        $('#txnAlerts').show();
     },
 
     // Helper method to generate etherscan url tag

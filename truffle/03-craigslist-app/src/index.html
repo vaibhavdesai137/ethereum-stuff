@@ -54,8 +54,8 @@
                     <!-- EVENTS LOAD HERE -->
                 </ul>
             </div>
-            <div id="alerts" class="row">
-                <!-- ALERTS LOAD HERE -->
+            <div id="txnAlerts" class="row">
+                <!-- TXN ALERTS LOAD HERE -->
             </div>
             <div id="itemsRow" class="row">
                 <!-- ITEMS LOAD HERE -->
@@ -65,47 +65,6 @@
 
     <div class="container" id="nothingOnSaleDiv" style="display: none;">
         <p><br/>There are no items on sale. Start by listing a new item using the button above...</p>
-    </div>
-
-    <div id="itemTemplate" style="display: none;">
-        <div class="row-lg-12">
-            <div class="panel panel-default panel-item">
-                <div class="panel-heading">
-                    <h3 class="panel-title item-name"></h3>
-                </div>
-                <div class="panel-body">
-                    <div class="row">
-                        <div class="col-lg-9">
-                            <strong>Item Description</strong>:
-                            <span class="item-desc"></span>
-                            <br/>
-                            <strong>Item Price (ETH)</strong>:
-                            <span class="item-price"></span>
-                            <br/>
-                            <strong>Item Status</strong>:
-                            <span class="item-status"></span>
-                            <br/>
-                            <br/>
-                            <strong>Item Sold By</strong>:
-                            <span class="item-seller"></span>
-                            <br/>
-                            <strong>Item Bought By</strong>:
-                            <span class="item-buyer"></span>
-                            <br/>
-                        </div>
-                        <!--<div class="col-lg-3">
-                            <span class="item-image"></span>
-                        </div>-->
-                        <div class="col-lg-3">
-                            <img class="item-image thumbnail" width="100px" height="100px"/>
-                        </div>
-                    </div>
-                </div>
-                <div class="panel-footer">
-                    <button class="btn btn-success btn-md btn-buy" onclick="App.buyItem(); return false;">Buy</button>
-                </div>
-            </div>
-        </div>
     </div>
 
     <!-- Modal form to list an item -->

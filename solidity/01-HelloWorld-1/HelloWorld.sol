@@ -1,5 +1,5 @@
 // Need to determine which version
-pragma solidity ^0.4.0;
+pragma solidity ^0.4.19;
 
 contract HelloWorld {
     

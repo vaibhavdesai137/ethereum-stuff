@@ -1,4 +1,4 @@
-pragma solidity ^0.4.0;
+pragma solidity ^0.4.19;
 
 // Same as prev example but there in depositFunds(), there is no way to return any data from SETTERS.
 // i.e. there is no transaction receipt.
@@ -23,7 +23,7 @@ contract Events {
     event UpdateStatus(string _msg, uint _amount);
     event UserStatus(string _msg, uint _amount, address sender);
 
-    function Events() {
+    function Events() public {
         client = msg.sender;    
         withdrawStatus = false;
     }
@@ -41,13 +41,13 @@ contract Events {
     }
 
     // Removed the modifier check so anyone can send money to this contract
-    function depositFunds() payable {
+    function depositFunds() public payable {
         UserStatus("User has deposited some money.", msg.value, msg.sender);
     }   
 
     // Send the money back to the client's address.
     // Only the contract creator can with the money.
-    function withdrawFunds(uint amount) ifClient {
+    function withdrawFunds(uint amount) public ifClient {
         if (client.send(amount)) {
             UpdateStatus("User has withdrawn some money.", amount);
             withdrawStatus = true;
@@ -59,7 +59,7 @@ contract Events {
     // Return the balance.
     // Ideally we need to return the client's balance but since our contract 
     // is working with just 1 client, its the same as returning the balance of this smart contract itself.
-    function getBalance() constant returns (uint) {
+    function getBalance() public constant returns (uint) {
         return this.balance;
     }       
     

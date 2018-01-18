@@ -1,4 +1,4 @@
-pragma solidity ^0.4.0;
+pragma solidity ^0.4.19;
 
 contract RockPaperScissors {
 
@@ -18,7 +18,7 @@ contract RockPaperScissors {
 	// 0 ---> draw
 	// 1 ---> player 1 winner
 	// 2 ---> player 2 winner
-	function RockPaperScissors() {
+	function RockPaperScissors() public {
 
 		payoutMap["rock"]["rock"] = 0;
 		payoutMap["rock"]["paper"] = 2;
@@ -54,7 +54,7 @@ contract RockPaperScissors {
 
 	// Only 2 players can register.
 	// Both players need to register with bet money.
-	function register() 
+	function register() public 
 	    notRegisteredYet 
 	    verifyBetAmount 
 	    payable {
@@ -68,7 +68,7 @@ contract RockPaperScissors {
 
 	}
 
-	function play(string choice) returns (int) {
+	function play(string choice) public returns (int) {
 
 		if (msg.sender == player1) {
 		    player1Choice = choice;
@@ -101,27 +101,27 @@ contract RockPaperScissors {
 	}
 
     // Getters
-    function getMyBalance() constant returns (uint amount) {
+    function getMyBalance() public constant returns (uint amount) {
         return msg.sender.balance;
     }
     
-	function getBetAmount() constant returns (uint) {
+	function getBetAmount() public constant returns (uint) {
 		return this.balance;
 	}
 
-	function isPlayer1() constant returns (bool) {
+	function isPlayer1() public constant returns (bool) {
 		return msg.sender == player1;
 	}
 
-	function isPlayer2() constant returns (bool) {
+	function isPlayer2() public constant returns (bool) {
 		return msg.sender == player2;
 	}
 	
-	function didPlayer1Play() constant returns (bool) {
+	function didPlayer1Play() public constant returns (bool) {
 		return player1Played;
 	}
 	
-	function didPlayer2Play() constant returns (bool) {
+	function didPlayer2Play() public constant returns (bool) {
 		return player2Played;
 	}
 

@@ -1,4 +1,4 @@
-pragma solidity ^0.4.0;
+pragma solidity ^0.4.19;
 
 // Called Contract's state CANNOT BE CHANGED since we are creating a new called contract everytime.
 contract CallingContract {
@@ -8,11 +8,11 @@ contract CallingContract {
 	// our contract will still see the value as 100.
 	CalledContract calledContract = new CalledContract();
 
-	function getNumber() constant returns (uint) {
+	function getNumber() public constant returns (uint) {
 		return calledContract.getNumber();
 	}
 	
-	function getMsg() constant returns (bytes32) {
+	function getMsg() public constant returns (bytes32) {
 		// This will throw compilation error if getMsg from the called contract returns a string.
 		return calledContract.getMsg();
 	}
@@ -27,19 +27,19 @@ contract CalledContract {
 	// string msg = "Hello World";
 	bytes32 msg = "Hello World";
 
-	function CalledContract() {
+	function CalledContract() public {
 		
 	}	
 
-	function getNumber() constant returns (uint) {
+	function getNumber() public constant returns (uint) {
 		return number;
 	}
 	
-	function setNumber(uint _number) {
+	function setNumber(uint _number) public {
 		number = _number;
 	}
 
-	function getMsg() constant returns (bytes32) {
+	function getMsg() public constant returns (bytes32) {
 		return msg;
 	}
 

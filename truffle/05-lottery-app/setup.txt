@@ -1,0 +1,13 @@
+
+# Needs node version > 7 to use async features in node
+$ nvm install node
+$ node --version
+v9.4.0
+
+# Install our modules
+# ganache-cli is a module that creates a test ethereum network internally
+npm install --save mocha ganache-cli web3
+
+# Sign up on infura to not have to setup our own local/test networks
+# Use truffle wallet to deal with accounts
+npm install --save truffle-hdwallet-provider

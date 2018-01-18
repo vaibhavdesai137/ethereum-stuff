@@ -1,5 +1,5 @@
 // Need to determine which version
-pragma solidity ^0.4.0;
+pragma solidity ^0.4.19;
 
 // Same as prev example but if we have LOTS of functions then it becomes messy to add the if (issuer) check everywhere.
 // This example achieves the same in a simpler way using the "modifier" keyword.
@@ -8,7 +8,7 @@ contract Modifiers {
     string text = "Original Text";
     address issuer;
 
-    function Modifiers() {
+    function Modifiers() public {
         issuer = msg.sender;
     }
 
@@ -26,13 +26,12 @@ contract Modifiers {
     }
 
 
-	function getText() constant returns (string) {
-    	return text;
-    }	
+    function getText() public constant returns (string) {
+        return text;
+    }   
 
-    function setText(string _text) ifIssuer returns (string) {
+    function setText(string _text) public ifIssuer {
         text = _text;
-        return "You created the contract so allowing to change state.";
-    }	    
+    }       
     
 }

@@ -1,12 +1,12 @@
 // Need to determine which version
-pragma solidity ^0.4.0;
+pragma solidity ^0.4.19;
 
 contract BankAccount {
     
     address client;
     bool withdrawStatus;
 
-    function BankAccount() {
+    function BankAccount() public {
         client = msg.sender;    
         withdrawStatus = false;
     }
@@ -25,12 +25,12 @@ contract BankAccount {
 
     // No need for any input params because this method accepts whatever value was passed when the node initiated this txn.
     // Deposit money in this contract (which represents the client)
-	function depositFunds() ifClient payable {
-    	
-    }	
+    function depositFunds() public ifClient payable {
+        
+    }   
 
     // Send the money back to the client's address
-    function withdrawFunds(uint amount) ifClient {
+    function withdrawFunds(uint amount) public ifClient {
         if (client.send(amount)) {
             withdrawStatus = true;
         } else {
@@ -38,11 +38,11 @@ contract BankAccount {
         }
     }
 
-	// Return the balance.
+    // Return the balance.
     // Ideally we need to return the client's balance but since our contract 
     // is working with just 1 client, its the same as returning the balance of this smart contract itself.
-    function getBalance() constant returns (uint) {
+    function getBalance() public constant returns (uint) {
         return this.balance;
-    }	    
+    }       
     
 }

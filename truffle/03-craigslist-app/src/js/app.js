@@ -56,7 +56,7 @@ App = {
     },
 
     // Get network
-    getNetworkInfo: function() {
+getNetworkInfo: function() {
 
         web3.version.getNode(function(err, node) {
 

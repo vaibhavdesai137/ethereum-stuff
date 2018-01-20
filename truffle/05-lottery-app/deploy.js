@@ -15,12 +15,12 @@ const infuraKey = process.env.INFURE_KEY;
 const infuraRinkebyEndpoint = 'https://rinkeby.infura.io/' + infuraKey;
 
 // By default the wallet unlocks the 1st account only
-// Explicitly open 2nd account which I know is my rinkeby address
+// Explicitly open 3rd account which I know is my rinkeby address
 const provider = new HDWalletProvider(mnemonic, infuraRinkebyEndpoint, 2);
 const web3 = new Web3(provider);
 
 // Using this style just to use "async" and "await"
-// This is becoz "await" has to be used within a function
+// This is because "await" has to be used within a function
 const deploy = async() => {
 
     try {

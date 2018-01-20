@@ -45,6 +45,7 @@ const deploy = async() => {
             gas: 1000000
         });
         console.log('Contract successfully deployed at: ' + contract.options.address);
+        console.log('\nContract interface: \n' + interface);
         console.log();
 
     } catch (err) {

@@ -1,4 +1,5 @@
 {
     "editor.tabSize": 4,
-    "indent_size": 4
+    "indent_size": 4,
+    "tabSize": 4
 }

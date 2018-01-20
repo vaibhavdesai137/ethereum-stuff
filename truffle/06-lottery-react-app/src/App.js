@@ -21,11 +21,11 @@ class App extends Component {
 
     // Newer way
     state = {
-        manager: "",
+        manager: '',
         players: [],
-        balance: "",
-        playerBet: "",
-        message: ""
+        balance: '',
+        playerBet: '',
+        message: ''
     };
 
     // automatically called when render() complete
@@ -64,7 +64,7 @@ class App extends Component {
         });
         
         this.setState({
-            message: 'Your participation is now confirmed. TxnHash: ' + receipt.transactionHash
+            message: 'Your participation is now confirmed. \nTxnHash: ' + receipt.transactionHash
         });
     };
 
@@ -86,7 +86,7 @@ class App extends Component {
         });
         
         this.setState({
-            message: 'Winner is foo'
+            message: 'Winner has been picked and lottery contract has been reset'
         });
     };
 

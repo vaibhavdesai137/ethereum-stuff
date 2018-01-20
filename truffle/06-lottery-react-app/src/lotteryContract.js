@@ -1,5 +1,7 @@
 import web3 from './web3';
 
+// Assumes the contract is already deployed on rninkeby
+
 const address = '0xFFD08F5e3B01b7AaD501F18f9a293b2eEb283A90';
 
 const abi = [{

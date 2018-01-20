@@ -1,34 +1,56 @@
+const assert = require('assert');
 const Web3 = require('web3');
 const HDWalletProvider = require('truffle-hdwallet-provider');
 const {
     interface,
     bytecode
-} = require('../compile');
+} = require('./compile');
 
-// DO NOT STORE MNEMONICS IN THE CODE
-// PASS VIA ENV VARIABLES
-const mnemonic = '';
-const infuraKey = 'nvxZYSfnZBHyzCyDe3YE';
-const rinkebyEndpoint = 'https://rinkeby.infura.io/' + infuraKey;
-const provider = new HDWalletProvider(mnemonic, rinkebyEndpoint);
+// DO NOT STORE MNEMONICS/KEYS IN THE CODE, PASS VIA ENV VARIABLES
+const mnemonic = process.env.METAMASK_MNEMONIC;
+const rinkebyAccount = process.env.RINKEBY_ACCOUNT;
+
+// We'll use infura's node for deploying to avoid setting up our own network
+const infuraKey = process.env.INFURE_KEY;
+const infuraRinkebyEndpoint = 'https://rinkeby.infura.io/' + infuraKey;
+
+// By default the wallet unlocks the 1st account only
+// Explicitly open 2nd account which I know is my rinkeby address
+const provider = new HDWalletProvider(mnemonic, infuraRinkebyEndpoint, 2);
 const web3 = new Web3(provider);
 
 // Using this style just to use "async" and "await"
 // This is becoz "await" has to be used within a function
 const deploy = async() => {
 
-    const accounts = await web3.eth.getAccounts();
-    
-    console.log('Attempting rinkeby deploy using account: ' + accounts[0]);
+    try {
 
-    const contract = await new web3.eth.Contract(JSON.parse(interface)).deploy({
-        data: bytecode
-    }).send({
-        from: accounts[0],
-        gas: 1000000
-    });
+        console.log('\nUnlocking account...');
+        const accounts = await web3.eth.getAccounts();
+        const unlockedAccount = accounts[0];
+        console.log('Account unlocked: ' + unlockedAccount);
 
-    console.log('Contract successfully deployed at: ' + contract.options.address);
+        // Safeguard
+        assert.equal(unlockedAccount, rinkebyAccount);
+
+        console.log('\nFetching account balance...');
+        const balance = await web3.eth.getBalance(unlockedAccount);
+        console.log('Balance: ' + web3.utils.fromWei(balance, 'ether'));
+
+        console.log('\nDeploy contract on rinkeby...');
+        const contract = await new web3.eth.Contract(JSON.parse(interface)).deploy({
+            data: bytecode
+        }).send({
+            from: unlockedAccount,
+            gas: 1000000
+        });
+        console.log('Contract successfully deployed at: ' + contract.options.address);
+        console.log();
+
+    } catch (err) {
+        console.log(err);
+    }
+
 }
 
 // Trigger the deployment

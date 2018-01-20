@@ -6,8 +6,11 @@ v9.4.0
 
 # Install our modules
 # ganache-cli is a module that creates a test ethereum network internally
-npm install --save mocha ganache-cli web3
+npm install --save mocha ganache-cli web3@1.0.0-beta.27
 
 # Sign up on infura to not have to setup our own local/test networks
 # Use truffle wallet to deal with accounts
 npm install --save truffle-hdwallet-provider
+
+# Deploying contract
+METAMASK_MNEMONIC="" RINKEBY_ACCOUNT="0xBACe226b892D61CD7A7a2D6eCFd5978ec2BCBBf6" INFURA_KEY="" node deploy.js

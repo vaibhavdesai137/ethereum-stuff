@@ -1,0 +1,11 @@
+
+# Use react to create a new project
+$ sudo npm install -g create-react-app 
+$ create-react-app 06-lottery-react-app
+
+$ cd 06-lottery-react-app
+$ npm install --save web3@1.0.0-beta.27
+
+# Start server 
+$ npm run start
+

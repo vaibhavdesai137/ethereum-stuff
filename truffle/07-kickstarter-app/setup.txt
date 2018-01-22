@@ -2,7 +2,9 @@ $ mkdir 07-kickstarter-app
 $ cd 07-kickstarter-app
 $ npm init
 
-$ npm install --save react-bootstrap web3@1.0.0-beta.27 ganache-cli mocha next fs-extra solc
+$ npm install --save react-bootstrap web3@1.0.0-beta.27 ganache-cli mocha next fs-extra solc truffle-hdwallet-provider
 
 $ node compile.js
 
+# Deploying contract
+METAMASK_MNEMONIC="" RINKEBY_ACCOUNT="0xBACe226b892D61CD7A7a2D6eCFd5978ec2BCBBf6" INFURA_KEY="" node deploy.js

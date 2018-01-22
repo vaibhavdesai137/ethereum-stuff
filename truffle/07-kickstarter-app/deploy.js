@@ -1,10 +1,10 @@
 const assert = require('assert');
 const Web3 = require('web3');
 const HDWalletProvider = require('truffle-hdwallet-provider');
-const {
-    interface,
-    bytecode
-} = require('./compile');
+
+// We only care about deploying the factory since thats the entry point for our users
+// Using factory, we can retrieve all the campaigns that were created
+const compiledCampaignFactoryContract = require('./build/CampaignFactory.json');
 
 // DO NOT STORE MNEMONICS/KEYS IN THE CODE, PASS VIA ENV VARIABLES
 const mnemonic = process.env.METAMASK_MNEMONIC;
@@ -38,14 +38,13 @@ const deploy = async() => {
         console.log('Balance: ' + web3.utils.fromWei(balance, 'ether'));
 
         console.log('\nDeploy contract on rinkeby...');
-        const contract = await new web3.eth.Contract(JSON.parse(interface)).deploy({
-            data: bytecode
+        const contract = await new web3.eth.Contract(JSON.parse(compiledCampaignFactoryContract.interface)).deploy({
+            data: compiledCampaignFactoryContract.bytecode
         }).send({
             from: unlockedAccount,
-            gas: 1000000
+            gas: 5000000
         });
         console.log('Contract successfully deployed at: ' + contract.options.address);
-        console.log('\nContract interface: \n' + interface);
         console.log();
 
     } catch (err) {
@@ -56,3 +55,5 @@ const deploy = async() => {
 
 // Trigger the deployment
 deploy();
+
+// contract deployed at 0x53bBd7433D0f54ca6608A53acFDa321F392A6989

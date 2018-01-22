@@ -45,28 +45,8 @@ contract Campaign {
         _;
     }
     
-    modifier needsMinimumContribution()  {
-        require(msg.value >= minimumContribution);
-        _;
-    }
-    
     modifier onlyContributors()  {
         require(contributors[msg.sender] > 0);
-        _;
-    }
-    
-    modifier ifNotVotedYet(uint spendingRequestId) {
-        require(spendingRequests[spendingRequestId].approvers[msg.sender] == false);
-        _;
-    }
-    
-    modifier notFinalizedAlready(uint spendingRequestId) {
-        require(spendingRequests[spendingRequestId].complete == false);
-        _;
-    }
-    
-    modifier hasEnoughApprovers(uint spendingRequestId) {
-        require(spendingRequests[spendingRequestId].approversCount > (contributorsCount / 2));
         _;
     }
     
@@ -77,13 +57,15 @@ contract Campaign {
         minimumContribution = _minimumContribution;
     }
     
-    function contribute() public payable needsMinimumContribution {
+    function contribute() public payable {
+        
+        require(msg.value >= minimumContribution);
+
         contributors[msg.sender] = msg.value;
         contributorsCount += 1;
     }
     
-    function createSpendingRequest(string _desc, uint _amount, address _recipient) public 
-        onlyCreator {
+    function createSpendingRequest(string _desc, uint _amount, address _recipient) public onlyCreator {
         
         SpendingRequest memory newSpendingRequest = SpendingRequest({
             id: 0,
@@ -98,19 +80,20 @@ contract Campaign {
         spendingRequestsCount += 1;
     }
     
-    function approveSpendingRequest(uint spendingRequestId) public 
-        onlyContributors 
-        ifNotVotedYet(spendingRequestId) {
+    function approveSpendingRequest(uint spendingRequestId) public onlyContributors {
                 
+        require(spendingRequests[spendingRequestId].approvers[msg.sender] == false);
+
         SpendingRequest storage sr = spendingRequests[spendingRequestId];
         sr.approvers[msg.sender] = true;
         sr.approversCount += 1;
     }
     
-    function finalizeSpendingRequest(uint spendingRequestId) public 
-        notFinalizedAlready(spendingRequestId) 
-        hasEnoughApprovers(spendingRequestId) {
+    function finalizeSpendingRequest(uint spendingRequestId) public {
         
+        require(spendingRequests[spendingRequestId].complete == false);
+        require(spendingRequests[spendingRequestId].approversCount > (contributorsCount / 2));
+
         SpendingRequest storage sr = spendingRequests[spendingRequestId];
         sr.recipient.transfer(sr.amount);
         sr.complete = true;

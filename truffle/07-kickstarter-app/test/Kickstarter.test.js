@@ -58,18 +58,84 @@ describe('Campaign Factory Contract Test', () => {
         assert.ok(campaignContract.options.address);
     });
 
-    it('marks caller as the campaign creator', async () => {
+    it('marks caller as the campaign creator', async() => {
         const creator = await campaignContract.methods.creator().call();
         assert.equal(creator, accounts[1]);
     });
 
-    it('lets people contribute and add them to contributors list', async () => {
+    it('lets people contribute and add them to contributors list', async() => {
         await campaignContract.methods.contribute().send({
             from: accounts[2],
             value: web3.utils.toWei('0.5', 'ether')
         });
         const contribution = await campaignContract.methods.contributors(accounts[2]).call();
         assert.equal(contribution, web3.utils.toWei('0.5', 'ether'));
+    });
+
+    // creator set the min to 100 wei so try sending 50
+    it('checks for minimum contribution', async() => {
+        try {
+            await campaignContract.methods.contribute().send({
+                from: accounts[2],
+                value: 50
+            });
+            assert(false);
+        } catch (err) {
+            assert(err);
+        }
+    });
+
+    it('allows campaign creator to create a new spending request', async() => {
+        await campaignContract.methods.createSpendingRequest('Buy cables', web3.utils.toWei('0.2', 'ether'), accounts[5]).send({
+            from: accounts[1],
+            gas: 1000000
+        });
+        let spendingRequest = await campaignContract.methods.spendingRequests(0).call();
+        assert.equal(spendingRequest.desc, 'Buy cables');
+    });
+
+    it('allows to approve and finalize spending request', async() => {
+
+        // creator = accounts[1]
+        // contributor = accounts[2]
+        // approver = accounts[2]
+
+
+        // contribute from accounts[2]
+        await campaignContract.methods.contribute().send({
+            from: accounts[2],
+            value: web3.utils.toWei('5', 'ether')
+        });
+
+        // only creator can create new requests (accounts[1])
+        // accounts[2] gave 5 ethers so create one for 2 ethers
+        await campaignContract.methods.createSpendingRequest('Buy cables', web3.utils.toWei('2', 'ether'), accounts[3]).send({
+            from: accounts[1],
+            gas: 1000000
+        });
+
+        // approve the request as accounts[2]
+        await campaignContract.methods.approveSpendingRequest(0).send({
+            from: accounts[2],
+            gas: 1000000
+        });
+
+        // Since we have only 1 contributor (accounts[2]) and he/she already approved the request, our finalize request should go though
+        // creator has to call finalize request
+        await campaignContract.methods.finalizeSpendingRequest(0).send({
+            from: accounts[1],
+            gas: 1000000
+        });
+
+        // ensure the request is set to complete
+        let spendingRequest = await campaignContract.methods.spendingRequests(0).call();
+        assert.equal(spendingRequest.complete, true);
+
+        // also ensure the spending request recipient got the money
+        // each account started with 100 ethers and the request would have transferred another 2 ethers
+        let balance = await web3.eth.getBalance(accounts[3]);
+        balance = web3.utils.fromWei(balance, 'ether');
+        assert.equal(balance, 102);
     });
 
 });

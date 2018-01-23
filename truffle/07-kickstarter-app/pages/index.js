@@ -3,11 +3,7 @@ import { Grid, Card, Button, Icon } from 'semantic-ui-react';
 import Layout from '../components/Layout';
 import campaignFactoryInstance from '../campaignFactory';
 
-class Campaigns extends Component {
-
-    state = {
-        campaigns: []
-    };
+class CampaignIndex extends Component {
 
     // Used soelly by Next.js since componentDidMount() works only with React and not Next
     static async getInitialProps() {
@@ -52,4 +48,4 @@ class Campaigns extends Component {
 
 }
 
-export default Campaigns;
+export default CampaignIndex;

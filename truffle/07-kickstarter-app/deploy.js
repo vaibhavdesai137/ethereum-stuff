@@ -55,5 +55,3 @@ const deploy = async() => {
 
 // Trigger the deployment
 deploy();
-
-// contract deployed at 0x53bBd7433D0f54ca6608A53acFDa321F392A6989

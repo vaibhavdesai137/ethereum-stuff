@@ -98,5 +98,17 @@ contract Campaign {
         sr.recipient.transfer(sr.amount);
         sr.complete = true;
     }
-   
+
+    // Helper method to retrieve all info using a single call from our web app
+    function getDetails() public view returns (address, string, string, uint, uint, uint, uint, uint) {
+        return (
+            creator, 
+            title,
+            desc, 
+            minimumContribution,
+            contributorsCount,
+            spendingRequestsCount,
+            this.balance
+        );
+    }
 }

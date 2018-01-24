@@ -16,9 +16,16 @@ class CampaignIndex extends Component {
     renderCampaigns() {
 
         const items = this.props.campaigns.map(campaignAddress => {
+
+            var campaignDetailsLink = '/campaigns/' + campaignAddress;
+
             return {
                 header: campaignAddress,
-                description: <a>View Campaign</a>,
+                description: (
+                    <Link route={campaignDetailsLink}>
+                        <a>View Campaign</a>
+                    </Link>
+                ),
                 fluid: true
             };
         });
@@ -37,10 +44,14 @@ class CampaignIndex extends Component {
                         </Grid.Column>
                         <Grid.Column width={3}>
                             <h3>&nbsp;</h3>
-                            <Button style={{ fontSize: '14px' }} positive={true}>
-                                Got An Idea?
-                                <br /><br />Start Here
-                            </Button>
+                            <Link route='/campaigns/new'>
+                                <a>
+                                    <Button style={{ fontSize: '14px' }} positive={true}>
+                                        Got An Idea?
+                                    <br /><br />Start Here
+                                </Button>
+                                </a>
+                            </Link>
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>

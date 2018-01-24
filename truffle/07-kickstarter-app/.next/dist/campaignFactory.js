@@ -14,7 +14,7 @@ var _CampaignFactory2 = _interopRequireDefault(_CampaignFactory);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var campaignFactoryContractAddress = '0x53bBd7433D0f54ca6608A53acFDa321F392A6989';
+var campaignFactoryContractAddress = '0xe30555B8453a86B52766dCa3336DdbCdb1340345';
 var campaignFactoryContractInstance = new _web2.default.eth.Contract(JSON.parse(_CampaignFactory2.default.interface), campaignFactoryContractAddress);
 
 exports.default = campaignFactoryContractInstance;

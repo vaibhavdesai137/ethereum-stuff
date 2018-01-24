@@ -7,7 +7,7 @@ import { Link } from '../routes';
 
 class CampaignIndex extends Component {
 
-    // Used soelly by Next.js since componentDidMount() works only with React and not Next
+    // Used solely by Next.js since componentDidMount() works only with React and not Next
     static async getInitialProps() {
         const campaigns = await campaignFactoryInstance.methods.getAllCampaigns().call();
         return { campaigns: campaigns };
@@ -15,20 +15,27 @@ class CampaignIndex extends Component {
 
     renderCampaigns() {
 
-        const items = this.props.campaigns.map(campaignAddress => {
-
-            var campaignDetailsLink = '/campaigns/' + campaignAddress;
-
-            return {
-                header: campaignAddress,
-                description: (
-                    <Link route={campaignDetailsLink}>
-                        <a>View Campaign</a>
-                    </Link>
-                ),
+        let items;
+        if (this.props.campaigns.length == 0) {
+            items = [{
+                header: 'No campaigns found',
+                description: '',
                 fluid: true
-            };
-        });
+            }];
+        } else {
+            items = this.props.campaigns.map(campaignAddress => {
+                var campaignDetailsLink = '/campaigns/' + campaignAddress;
+                return {
+                    header: campaignAddress,
+                    description: (
+                        <Link route={campaignDetailsLink}>
+                            <a>View Campaign</a>
+                        </Link>
+                    ),
+                    fluid: true
+                };
+            });
+        }
 
         return <Card.Group items={items} />;
     }

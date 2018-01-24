@@ -6,7 +6,7 @@ export default (props) => {
     return (
         <div>
             <Header as='h1' textAlign='center' style={{ marginTop: '30px' }}>
-                <Header.Content style={{ fontColor: 'blue' }}>
+                <Header.Content>
                     <Icon name='lightbulb' color='green' />
                     &nbsp;&nbsp;&nbsp;Kickstartr&nbsp;&nbsp;&nbsp;
                     <Icon name='lightbulb' color='green' />

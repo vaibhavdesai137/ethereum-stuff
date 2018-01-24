@@ -43,7 +43,7 @@ class CampaignIndex extends Component {
     render() {
         return (
             <Layout>
-                <Grid style={{ marginTop: '30px' }} divided='vertically' stretched>
+                <Grid divided='vertically' stretched>
                     <Grid.Row>
                         <Grid.Column width={13}>
                             <h3>Open Campaigns</h3>

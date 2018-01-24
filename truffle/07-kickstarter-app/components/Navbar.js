@@ -39,7 +39,7 @@ export default () => {
                     </Menu.Item>
                 </Menu.Menu>
             </Menu>
-            <hr style={{ borderTop: '1px solid green' }} />
+            <hr style={{ borderTop: '1px solid green', marginBottom: '50px' }} />
         </div>
     );
 

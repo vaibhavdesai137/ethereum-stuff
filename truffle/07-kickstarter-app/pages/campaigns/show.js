@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import { Header, Grid, Form, Input, Button, Message, Card } from 'semantic-ui-react';
+import { Header, Grid, Form, Input, Button, Message, Card, TextArea } from 'semantic-ui-react';
 import Layout from '../../components/Layout';
 
 import CampaignFetcher from '../../campaign.js';
 import web3 from '../../web3';
 import { Router } from '../../routes';
-import TextArea from 'semantic-ui-react/dist/commonjs/addons/TextArea/TextArea';
+import ContributeForm from '../../components/ContributeForm';
 
 class CampaignShow extends Component {
 
@@ -19,10 +19,11 @@ class CampaignShow extends Component {
         const campaignInstance = CampaignFetcher(props.query.address);
         const campaignDetails = await campaignInstance.methods.getDetails().call();
         return {
+            address: props.query.address,
             creator: campaignDetails[0],
             title: campaignDetails[1],
             desc: campaignDetails[2],
-            minimumContribution: campaignDetails[3],
+            minimumContribution: web3.utils.fromWei(campaignDetails[3], 'ether'),
             contributorsCount: campaignDetails[4],
             spendingRequestsCount: campaignDetails[5],
             balance: campaignDetails[6]
@@ -44,10 +45,12 @@ class CampaignShow extends Component {
         const items = [
             {
                 header: <Header as='h1' style={{ fontSize: '50px' }}>{balance}</Header>,
-                description: 'Total Contribution So Far'
+                meta: 'ETH',
+                description: 'Total Contribution So Far',
             },
             {
                 header: <Header as='h1' style={{ fontSize: '50px' }}>{minimumContribution}</Header>,
+                meta: 'ETH',
                 description: 'Minimum Contribution'
             },
             {
@@ -69,52 +72,24 @@ class CampaignShow extends Component {
         return <Card.Group items={items} />;
     }
 
-    async contribute() {
-        event.preventDefault();
-
-        this.setState({ errMsg: '', loading: true });
-
-        try {
-            const accounts = await web3.eth.getAccounts();
-            const receipt = await campaignFactoryInstance.methods
-                .createCampaign(this.state.title, this.state.desc, this.state.minimumContribution)
-                .send({ from: accounts[0] });
-            Router.pushRoute('/');
-        } catch (err) {
-            this.setState({ errMsg: err.message });
-        }
-
-        this.setState({ loading: false });
-    }
-
     render() {
         return (
             <Layout>
-                <Grid style={{ marginTop: '30px' }}>
+                <Grid>
                     <Grid.Row>
                         <Grid.Column width={16}>
-                            <Header as='h1' textAlign='center'>
+                            <Header as='h1' textAlign='left'>
                                 <Header.Content>{this.props.title}</Header.Content>
                                 <Header.Subheader style={{ marginTop: '10px' }}>{this.props.desc}</Header.Subheader>
                             </Header>
                         </Grid.Column>
                     </Grid.Row>
-                    <Grid.Row style={{ marginTop: '50px' }}>
+                    <Grid.Row style={{ marginTop: '30px' }}>
                         <Grid.Column width={12}>
                             {this.renderCards()}
                         </Grid.Column>
                         <Grid.Column width={4}>
-                            <h3>Wanna contribute?</h3>
-                            <Form error={!!this.state.errMsg} >
-                                <Form.Field>
-                                    <Input label='WEI' labelPosition='right'
-                                        value={this.state.contribution}
-                                        onChange={event => this.setState({ contribution: event.target.value })} />
-                                </Form.Field>
-                                <Message error header='Oops!!!' content={this.state.errMsg} />
-                                <Button onClick={this.contribute.bind(this)} loading={this.state.loading}
-                                    type='submit' positive>Contribute</Button>
-                            </Form>
+                            <ContributeForm address={this.props.address} />
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>

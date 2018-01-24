@@ -24,7 +24,7 @@ class CampaignNew extends Component {
         try {
             const accounts = await web3.eth.getAccounts();
             const receipt = await campaignFactoryInstance.methods
-                .createCampaign(this.state.title, this.state.desc, this.state.minimumContribution)
+                .createCampaign(this.state.title, this.state.desc, web3.utils.toWei(this.state.minimumContribution, 'ether'))
                 .send({ from: accounts[0] });
             Router.pushRoute('/');
         } catch (err) {
@@ -41,7 +41,7 @@ class CampaignNew extends Component {
                     <Grid.Row>
                         <Grid.Column width={10}>
                             <h3>Create a new campaign</h3>
-                            <Form style={{ marginTop: '40px' }} error={!!this.state.errMsg} >
+                            <Form error={!!this.state.errMsg} >
                                 <Form.Field>
                                     <label>Title: </label>
                                     <input placeholder='Enter the campaign title here...'
@@ -57,7 +57,7 @@ class CampaignNew extends Component {
                                 <Form.Field>
                                     <label>Minimum Contribution: </label>
                                     <Input placeholder='Enter the minimum amount one needs to contribute...'
-                                        label='WEI' labelPosition='right'
+                                        label='ETH' labelPosition='right'
                                         value={this.state.minimumContribution}
                                         onChange={event => this.setState({ minimumContribution: event.target.value })} />
                                 </Form.Field>

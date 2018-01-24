@@ -40,12 +40,12 @@ contract Campaign {
     mapping(uint => SpendingRequest) public spendingRequests;
     uint public spendingRequestsCount;
     
-    modifier onlyCreator()  {
+    modifier onlyCreator() {
         require(msg.sender == creator);
         _;
     }
     
-    modifier onlyContributors()  {
+    modifier onlyContributors() {
         require(contributors[msg.sender] > 0);
         _;
     }
@@ -100,7 +100,7 @@ contract Campaign {
     }
 
     // Helper method to retrieve all info using a single call from our web app
-    function getDetails() public view returns (address, string, string, uint, uint, uint, uint, uint) {
+    function getDetails() public view returns (address, string, string, uint, uint, uint, uint) {
         return (
             creator, 
             title,

@@ -8,7 +8,12 @@ const src = fs.readFileSync(srcFilePath, 'utf8');
 
 // This will have two contracts
 console.log('\nCompiling ' + srcFilePath);
-const contracts = solc.compile(src).contracts;
+let contracts;
+try {
+    contracts = solc.compile(src).contracts;
+} catch (err) {
+    console.log(err);
+}
 
 // Delete everything under build and create the build dir if missing
 fs.removeSync(buildPath);

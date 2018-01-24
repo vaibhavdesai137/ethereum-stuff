@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { Grid, Card, Button, Icon } from 'semantic-ui-react';
+
 import Layout from '../components/Layout';
 import campaignFactoryInstance from '../campaignFactory';
+import { Link } from '../routes';
 
 class CampaignIndex extends Component {
 
@@ -35,9 +37,9 @@ class CampaignIndex extends Component {
                         </Grid.Column>
                         <Grid.Column width={3}>
                             <h3>&nbsp;</h3>
-                            <Button style={{fontSize: '14px'}} positive={true}>
+                            <Button style={{ fontSize: '14px' }} positive={true}>
                                 Got An Idea?
-                                <br/><br/>Start Here
+                                <br /><br />Start Here
                             </Button>
                         </Grid.Column>
                     </Grid.Row>

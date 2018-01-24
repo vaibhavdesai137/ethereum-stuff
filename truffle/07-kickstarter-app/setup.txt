@@ -2,7 +2,7 @@ $ mkdir 07-kickstarter-app
 $ cd 07-kickstarter-app
 $ npm init
 
-$ npm install --save react react-dom semantic-ui-css semantic-ui-react next@4.1.4 web3@1.0.0-beta.27 ganache-cli mocha fs-extra solc truffle-hdwallet-provider
+$ npm install --save react react-dom semantic-ui-css semantic-ui-react next@4.1.4 next-routes web3@1.0.0-beta.27 ganache-cli mocha fs-extra solc truffle-hdwallet-provider
 
 $ node compile.js
 

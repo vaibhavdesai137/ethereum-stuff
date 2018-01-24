@@ -10,6 +10,8 @@ var _react2 = _interopRequireDefault(_react);
 
 var _semanticUiReact = require('semantic-ui-react');
 
+var _routes = require('../routes');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var _jsxFileName = '/Users/vaidesai/Development/git/vaibhavdesai137/ethereum-stuff/truffle/07-kickstarter-app/components/Navbar.js';
@@ -19,52 +21,58 @@ exports.default = function () {
     return _react2.default.createElement('div', {
         __source: {
             fileName: _jsxFileName,
-            lineNumber: 7
+            lineNumber: 8
         }
     }, _react2.default.createElement(_semanticUiReact.Menu, { style: { marginTop: '30px', marginBottom: '30px' }, __source: {
             fileName: _jsxFileName,
-            lineNumber: 8
-        }
-    }, _react2.default.createElement(_semanticUiReact.Menu.Item, {
-        __source: {
-            fileName: _jsxFileName,
             lineNumber: 9
         }
-    }, 'All Campaigns'), _react2.default.createElement(_semanticUiReact.Menu.Item, {
-        __source: {
+    }, _react2.default.createElement(_routes.Link, { route: '/', __source: {
             fileName: _jsxFileName,
-            lineNumber: 13
+            lineNumber: 16
+        }
+    }, _react2.default.createElement('a', { className: 'item', __source: {
+            fileName: _jsxFileName,
+            lineNumber: 17
+        }
+    }, 'All Campaigns')), _react2.default.createElement(_routes.Link, { route: '/campaigns/new', __source: {
+            fileName: _jsxFileName,
+            lineNumber: 26
+        }
+    }, _react2.default.createElement('a', { className: 'item', __source: {
+            fileName: _jsxFileName,
+            lineNumber: 27
         }
     }, _react2.default.createElement(_semanticUiReact.Icon, { name: 'add', __source: {
             fileName: _jsxFileName,
-            lineNumber: 14
+            lineNumber: 27
         }
-    }), 'Create New Campaign'), _react2.default.createElement(_semanticUiReact.Menu.Menu, { position: 'right', __source: {
+    }), 'Create Campaign')), _react2.default.createElement(_semanticUiReact.Menu.Menu, { position: 'right', __source: {
             fileName: _jsxFileName,
-            lineNumber: 18
+            lineNumber: 30
         }
     }, _react2.default.createElement(_semanticUiReact.Menu.Item, {
         __source: {
             fileName: _jsxFileName,
-            lineNumber: 19
+            lineNumber: 31
         }
     }, 'Vaibhav Desai'), _react2.default.createElement(_semanticUiReact.Menu.Item, {
         __source: {
             fileName: _jsxFileName,
-            lineNumber: 23
+            lineNumber: 35
         }
     }, _react2.default.createElement('a', { target: '_blank', href: 'https://github.com/vaibhavdesai137/ethereum-stuff/tree/master/truffle/07-kickstarter-app', __source: {
             fileName: _jsxFileName,
-            lineNumber: 24
+            lineNumber: 36
         }
-    }, _react2.default.createElement('i', { 'class': 'fa fa-github fa-lg', __source: {
+    }, _react2.default.createElement(_semanticUiReact.Icon, { name: 'github', size: 'large', __source: {
             fileName: _jsxFileName,
-            lineNumber: 25
+            lineNumber: 37
         }
     }))))), _react2.default.createElement('hr', { style: { borderTop: '1px solid green' }, __source: {
             fileName: _jsxFileName,
-            lineNumber: 30
+            lineNumber: 42
         }
     }));
 };
-//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImNvbXBvbmVudHMvTmF2YmFyLmpzIl0sIm5hbWVzIjpbIlJlYWN0IiwiTWVudSIsIkljb24iLCJtYXJnaW5Ub3AiLCJtYXJnaW5Cb3R0b20iLCJib3JkZXJUb3AiXSwibWFwcGluZ3MiOiI7Ozs7OztBQUFBLEFBQU87Ozs7QUFDUCxBQUFTLEFBQU0sQUFFZjs7Ozs7O2tCQUFlLFlBQU0sQUFFakI7OzJCQUNJLGNBQUE7O3NCQUFBO3dCQUFBLEFBQ0k7QUFESjtBQUFBLEtBQUEsa0JBQ0ksQUFBQyx1Q0FBSyxPQUFPLEVBQUUsV0FBRixBQUFhLFFBQVEsY0FBbEMsQUFBYSxBQUFtQztzQkFBaEQ7d0JBQUEsQUFDSTtBQURKO3VCQUNLLGNBQUQsc0JBQUEsQUFBTTs7c0JBQU47d0JBQUE7QUFBQTtBQUFBLE9BREosQUFDSSxBQUlBLGtDQUFDLGNBQUQsc0JBQUEsQUFBTTs7c0JBQU47d0JBQUEsQUFDSTtBQURKO0FBQUEsdUJBQ0ksQUFBQyx1Q0FBSyxNQUFOLEFBQVc7c0JBQVg7d0JBREosQUFDSTtBQUFBO1FBTlIsQUFLSSxBQUtBLHdDQUFDLGNBQUQsc0JBQUEsQUFBTSxRQUFLLFVBQVgsQUFBb0I7c0JBQXBCO3dCQUFBLEFBQ0k7QUFESjt1QkFDSyxjQUFELHNCQUFBLEFBQU07O3NCQUFOO3dCQUFBO0FBQUE7QUFBQSxPQURKLEFBQ0ksQUFJQSxrQ0FBQyxjQUFELHNCQUFBLEFBQU07O3NCQUFOO3dCQUFBLEFBQ0k7QUFESjtBQUFBLHVCQUNJLGNBQUEsT0FBRyxRQUFILEFBQVUsVUFBUyxNQUFuQixBQUF3QjtzQkFBeEI7d0JBQUEsQUFDSTtBQURKOzRDQUNPLFNBQUgsQUFBUztzQkFBVDt3QkFsQnBCLEFBQ0ksQUFVSSxBQUtJLEFBQ0ksQUFDSSxBQUtoQjtBQUxnQjtrREFLWixPQUFPLEVBQUUsV0FBYixBQUFXLEFBQWE7c0JBQXhCO3dCQXhCUixBQUNJLEFBdUJJLEFBSVg7QUFKVzs7QUExQloiLCJmaWxlIjoiTmF2YmFyLmpzIiwic291cmNlUm9vdCI6Ii9Vc2Vycy92YWlkZXNhaS9EZXZlbG9wbWVudC9naXQvdmFpYmhhdmRlc2FpMTM3L2V0aGVyZXVtLXN0dWZmL3RydWZmbGUvMDcta2lja3N0YXJ0ZXItYXBwIn0=
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImNvbXBvbmVudHMvTmF2YmFyLmpzIl0sIm5hbWVzIjpbIlJlYWN0IiwiTWVudSIsIkljb24iLCJMaW5rIiwibWFyZ2luVG9wIiwibWFyZ2luQm90dG9tIiwiYm9yZGVyVG9wIl0sIm1hcHBpbmdzIjoiOzs7Ozs7QUFBQSxBQUFPOzs7O0FBQ1AsQUFBUyxBQUFNOztBQUNmLEFBQVMsQUFBWSxBQUVyQjs7Ozs7O2tCQUFlLFlBQU0sQUFFakI7OzJCQUNJLGNBQUE7O3NCQUFBO3dCQUFBLEFBQ0k7QUFESjtBQUFBLEtBQUEsa0JBQ0ksQUFBQyx1Q0FBSyxPQUFPLEVBQUUsV0FBRixBQUFhLFFBQVEsY0FBbEMsQUFBYSxBQUFtQztzQkFBaEQ7d0JBQUEsQUFPSTtBQVBKO3VCQU9JLEFBQUMsOEJBQUssT0FBTixBQUFZO3NCQUFaO3dCQUFBLEFBQ0k7QUFESjt1QkFDSSxjQUFBLE9BQUcsV0FBSCxBQUFhO3NCQUFiO3dCQUFBO0FBQUE7T0FSUixBQU9JLEFBQ0ksQUFTSixtQ0FBQSxBQUFDLDhCQUFLLE9BQU4sQUFBWTtzQkFBWjt3QkFBQSxBQUNJO0FBREo7dUJBQ0ksY0FBQSxPQUFHLFdBQUgsQUFBYTtzQkFBYjt3QkFBQSxBQUFvQjtBQUFwQjt1QkFBb0IsQUFBQyx1Q0FBSyxNQUFOLEFBQVc7c0JBQVg7d0JBQXBCLEFBQW9CO0FBQUE7UUFsQjVCLEFBaUJJLEFBQ0ksQUFHSixxQ0FBQyxjQUFELHNCQUFBLEFBQU0sUUFBSyxVQUFYLEFBQW9CO3NCQUFwQjt3QkFBQSxBQUNJO0FBREo7dUJBQ0ssY0FBRCxzQkFBQSxBQUFNOztzQkFBTjt3QkFBQTtBQUFBO0FBQUEsT0FESixBQUNJLEFBSUEsa0NBQUMsY0FBRCxzQkFBQSxBQUFNOztzQkFBTjt3QkFBQSxBQUNJO0FBREo7QUFBQSx1QkFDSSxjQUFBLE9BQUcsUUFBSCxBQUFVLFVBQVMsTUFBbkIsQUFBd0I7c0JBQXhCO3dCQUFBLEFBQ0k7QUFESjt1QkFDSSxBQUFDLHVDQUFLLE1BQU4sQUFBVyxVQUFTLE1BQXBCLEFBQXlCO3NCQUF6Qjt3QkE3QnBCLEFBQ0ksQUFxQkksQUFLSSxBQUNJLEFBQ0ksQUFLaEI7QUFMZ0I7a0RBS1osT0FBTyxFQUFFLFdBQWIsQUFBVyxBQUFhO3NCQUF4Qjt3QkFuQ1IsQUFDSSxBQWtDSSxBQUlYO0FBSlc7O0FBckNaIiwiZmlsZSI6Ik5hdmJhci5qcyIsInNvdXJjZVJvb3QiOiIvVXNlcnMvdmFpZGVzYWkvRGV2ZWxvcG1lbnQvZ2l0L3ZhaWJoYXZkZXNhaTEzNy9ldGhlcmV1bS1zdHVmZi90cnVmZmxlLzA3LWtpY2tzdGFydGVyLWFwcCJ9

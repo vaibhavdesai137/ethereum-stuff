@@ -4,7 +4,7 @@ import Layout from '../../components/Layout';
 
 import CampaignFetcher from '../../campaign.js';
 import web3 from '../../web3';
-import { Router } from '../../routes';
+import { Link, Router } from '../../routes';
 import ContributeForm from '../../components/ContributeForm';
 
 class CampaignShow extends Component {
@@ -65,24 +65,15 @@ class CampaignShow extends Component {
         return <Card.Group items={items} />;
     }
 
-    renderCreatorCard() {
-
-        const items = [
-            {
-                header: <Header as='h3'><Icon name='user' />{this.props.creator}</Header>,
-                description: 'Campaign Creator',
-                style: { overflowWrap: 'break-word' },
-                fluid: true
-            }
-        ];
-
-        return <Card.Group items={items} />;
-    }
-
     render() {
         return (
             <Layout>
                 <Grid>
+                    <Grid.Row>
+                        <Grid.Column>
+                            <Message icon='info' header='Campaign Creator' content={this.props.creator} />
+                        </Grid.Column>
+                    </Grid.Row>
                     <Grid.Row>
                         <Grid.Column width={16}>
                             <Header as='h1' textAlign='left'>
@@ -91,7 +82,7 @@ class CampaignShow extends Component {
                             </Header>
                         </Grid.Column>
                     </Grid.Row>
-                    <Grid.Row style={{ marginTop: '30px' }}>
+                    <Grid.Row>
                         <Grid.Column width={12}>
                             {this.renderCards()}
                         </Grid.Column>
@@ -99,9 +90,15 @@ class CampaignShow extends Component {
                             <ContributeForm address={this.props.address} />
                         </Grid.Column>
                     </Grid.Row>
-                    <Grid.Row style={{ marginTop: '30px' }}>
-                        <Grid.Column width={16}>
-                            {this.renderCreatorCard()}
+                    <Grid.Row>
+                        <Grid.Column>
+                            <Link route={'/campaigns/' + this.props.address + '/spendingRequests'} >
+                                <a>
+                                    <Button style={{ fontSize: '14px' }} positive={true}>
+                                        View Spending Requests
+                                    </Button>
+                                </a>
+                            </Link>
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>

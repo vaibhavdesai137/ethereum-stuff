@@ -23,10 +23,10 @@ class CampaignIndex extends Component {
                 fluid: true
             }];
         } else {
-            items = this.props.campaigns.map(campaignAddress => {
-                var campaignDetailsLink = '/campaigns/' + campaignAddress;
+            items = this.props.campaigns.map(address => {
+                var campaignDetailsLink = '/campaigns/' + address;
                 return {
-                    header: campaignAddress,
+                    header: address,
                     description: (
                         <Link route={campaignDetailsLink}>
                             <a>View Campaign</a>

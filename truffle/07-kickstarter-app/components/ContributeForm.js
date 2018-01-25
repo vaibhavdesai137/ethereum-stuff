@@ -1,29 +1,32 @@
 import React, { Component } from 'react';
 import { Header, Form, Input, Button, Message } from 'semantic-ui-react';
 import CampaignFetcher from '../campaign.js';
+import web3 from '../web3';
+import { Router } from '../routes';
 
 class CampignContribute extends Component {
 
     state = {
         contribution: '',
-        errMsg: '',
+        errorMsg: '',
         loading: false
     }
 
     async contribute() {
         event.preventDefault();
 
-        this.setState({ errMsg: '', loading: true });
+        this.setState({ errorMsg: '', loading: true });
 
         try {
-            console.log('Address: ' + this.props.address);
             const campaignInstance = CampaignFetcher(this.props.address);
             const accounts = await web3.eth.getAccounts();
-            const receipt = await campaignInstance.methods
-                .contribute()
-                .send({ from: accounts[0], value: web3.utils.toWei(contribution, 'ether') });
+            const receipt = await campaignInstance.methods.contribute().send({
+                from: accounts[0], value: web3.utils.toWei(this.state.contribution, 'ether')
+            });
+            // Refresh the page once txn is successful
+            Router.replaceRoute('/campaigns/' + this.props.address);
         } catch (err) {
-            this.setState({ errMsg: err.message });
+            this.setState({ errorMsg: err.message });
         }
 
         this.setState({ loading: false });
@@ -33,13 +36,13 @@ class CampignContribute extends Component {
         return (
             <div>
                 <h3>Wanna contribute?</h3>
-                <Form error={!!this.state.errMsg} >
+                <Form error={!!this.state.errorMsg} >
                     <Form.Field>
                         <Input label='ETH' labelPosition='right'
                             value={this.state.contribution}
                             onChange={event => this.setState({ contribution: event.target.value })} />
                     </Form.Field>
-                    <Message error header='Oops!!!' content={this.state.errMsg} />
+                    <Message error header='Oops!!!' content={this.state.errorMsg} />
                     <Button onClick={this.contribute.bind(this)} loading={this.state.loading}
                         type='submit' positive>Contribute</Button>
                 </Form>

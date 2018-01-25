@@ -12,14 +12,14 @@ class CampaignNew extends Component {
         title: '',
         desc: '',
         minimumContribution: '',
-        errMsg: '',
+        errorMsg: '',
         loading: false
     }
 
     async createCampaign() {
         event.preventDefault();
 
-        this.setState({ errMsg: '', loading: true });
+        this.setState({ errorMsg: '', loading: true });
 
         try {
             const accounts = await web3.eth.getAccounts();
@@ -28,7 +28,7 @@ class CampaignNew extends Component {
                 .send({ from: accounts[0] });
             Router.pushRoute('/');
         } catch (err) {
-            this.setState({ errMsg: err.message });
+            this.setState({ errorMsg: err.message });
         }
 
         this.setState({ loading: false });
@@ -41,7 +41,7 @@ class CampaignNew extends Component {
                     <Grid.Row>
                         <Grid.Column width={10}>
                             <h3>Create a new campaign</h3>
-                            <Form error={!!this.state.errMsg} >
+                            <Form error={!!this.state.errorMsg} >
                                 <Form.Field>
                                     <label>Title: </label>
                                     <input placeholder='Enter the campaign title here...'
@@ -61,7 +61,7 @@ class CampaignNew extends Component {
                                         value={this.state.minimumContribution}
                                         onChange={event => this.setState({ minimumContribution: event.target.value })} />
                                 </Form.Field>
-                                <Message error header='Oops!!!' content={this.state.errMsg} />
+                                <Message error header='Oops!!!' content={this.state.errorMsg} />
                                 <Button onClick={this.createCampaign.bind(this)} loading={this.state.loading}
                                     type='submit' positive>Kickstart</Button>
                             </Form>

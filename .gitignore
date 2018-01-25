@@ -5,4 +5,4 @@ rinkeby-blockchain/keystore/
 mainnet-blockchain/geth/
 mainnet-blockchain/keystore/
 node_modules/
-
+.next/

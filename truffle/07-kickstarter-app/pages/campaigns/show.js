@@ -71,7 +71,7 @@ class CampaignShow extends Component {
                 <Grid>
                     <Grid.Row>
                         <Grid.Column>
-                            <Message icon='info' header='Campaign Creator' content={this.props.creator} />
+                            <Message icon='user' header='Campaign Creator' content={this.props.creator} />
                         </Grid.Column>
                     </Grid.Row>
                     <Grid.Row>

@@ -38,7 +38,7 @@ class SpendingRequestRow extends Component {
         const readyToFinalize = spendingRequest.approversCount > (this.props.contributorsCount / 2);
 
         return (
-            <Table.Row disabled={spendingRequest.complete} psoitive={readyToFinalize && !request.complete}>
+            <Table.Row disabled={spendingRequest.complete} positive={readyToFinalize && !spendingRequest.complete}>
                 <Table.Cell>{this.props.id}</Table.Cell>
                 <Table.Cell>{spendingRequest.desc}</Table.Cell>
                 <Table.Cell>{web3.utils.fromWei(spendingRequest.amount, 'ether') + ' ETH'}</Table.Cell>

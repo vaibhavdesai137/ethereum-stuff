@@ -3,7 +3,7 @@ const fs = require('fs-extra');
 const solc = require('solc');
 
 const buildPath = path.resolve(__dirname, 'build');
-const srcFilePath = path.resolve(__dirname, 'contracts', 'Kickstarter.sol');
+const srcFilePath = path.resolve(__dirname, 'contracts', 'Kickstartr.sol');
 const src = fs.readFileSync(srcFilePath, 'utf8');
 
 // This will have two contracts
